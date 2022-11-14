@@ -6,7 +6,7 @@
 #    By: frafal <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 20:59:46 by frafal            #+#    #+#              #
-#    Updated: 2022/11/11 10:55:51 by frafal           ###   ########.fr        #
+#    Updated: 2022/11/14 16:17:02 by frafal           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -55,25 +55,38 @@ SRCS		:= ft_atoi.c \
 OBJS		:= ${SRCS:.c=.o}
 RM	    	:= rm -f
 
-%.o:		%.c
+CYAN		:= \033[0;36m
+RESET		:= \033[0m
+
+%.o:		%.c compiling
 			${CC} ${FLAGS} ${DEBUG} -c $< -o $@
 
 ${NAME}:	${OBJS}
-			@echo "Compilation of $(NAME) ..."
+			@echo ""
+			@echo "${CYAN}Compilation Of ${NAME} ...${RESET}"
 			ar rcs ${NAME} ${OBJS}
-			echo "$(NAME) created"
+			@echo ""
+			@echo "${CYAN}${NAME} Created${RESET}"
 
 .PHONY:		all clean fclean re so
+
+.INTERMEDIATE:	compiling
+
+compiling:
+			@echo ""
+			@echo "${CYAN}Compiling Objects ...${RESET}"
 
 all:		${NAME}
 
 clean:
+			@echo ""
+			@echo "${CYAN}Deleting ${NAME} Objects ...${RESET}"
 			${RM} *.o
-			@ echo "Deleting $(NAME) objects"
 
 fclean:		clean
+			@echo ""
+			@echo "${CYAN}Deleting ${NAME} Library ...${RESET}"
 			${RM} ${NAME}
-			@ echo "Deleting $(NAME) library"
 
 re:			fclean all
 
