@@ -6,7 +6,7 @@
 #    By: frafal <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/07 10:02:44 by frafal            #+#    #+#              #
-#    Updated: 2022/11/14 15:38:53 by frafal           ###   ########.fr        #
+#    Updated: 2022/11/14 15:43:58 by frafal           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,7 +37,7 @@ MLX			:= ${MLXDIR}libmlx_Linux.a
 LIBS		:= -L${LIBFTDIR} -L${MLXDIR} -lft -lmlx_Linux -static
 INCS		:= -I${HEADDIR} -I${LIBFTDIR} -I${MLXDIR}
 
-${NAME}:	${OBJSDIR} ${OBJS} ${LIBFT} ${MLX}
+${NAME}:	${MLX} ${LIBFT} ${OBJSDIR} ${OBJS}
 			@ echo "Compilation of $(NAME) ..."
 			${CC} ${FLAGS} ${DEBUG} ${OBJS} -o ${NAME} ${LIBS} ${INCS}
 			@ echo "$(NAME) created"
