@@ -6,7 +6,7 @@
 #    By: frafal <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/07 10:02:44 by frafal            #+#    #+#              #
-#    Updated: 2022/11/14 16:16:43 by frafal           ###   ########.fr        #
+#    Updated: 2022/11/14 16:35:20 by frafal           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,7 +34,7 @@ LIBFT		:= ${LIBFTDIR}libft.a
 MLXDIR		:= ./minilibx-linux/
 MLX			:= ${MLXDIR}libmlx_Linux.a
 
-LIBS		:= -L${LIBFTDIR} -L${MLXDIR} -lft -lmlx_Linux -static
+LIBS		:= -L${LIBFTDIR} -L${MLXDIR} -lft -lmlx_Linux -lXext -lX11 
 INCS		:= -I${HEADDIR} -I${LIBFTDIR} -I${MLXDIR}
 
 CYAN		:= \033[0;36m
@@ -42,7 +42,7 @@ RESET		:= \033[0m
 
 ${NAME}:	${MLX} ${LIBFT} ${OBJSDIR} ${OBJS}
 			@echo ""
-			@echo "${CYAN}Compilation Of ${NAME} ...${RESET}"
+			@echo "${CYAN}Compiling ${NAME} ...${RESET}"
 			${CC} ${FLAGS} ${DEBUG} ${OBJS} -o ${NAME} ${LIBS} ${INCS}
 			@echo ""
 			@echo "${CYAN}$(NAME) Created${RESET}"
@@ -52,7 +52,7 @@ ${LIBFT}:
 
 ${MLX}:
 			@echo ""
-			@echo "${CYAN}Compilation of ${MLX} ...${RESET}"
+			@echo "${CYAN}Compiling ${MLX} ...${RESET}"
 			git submodule init
 			git submodule update
 			make -C ${MLXDIR}
@@ -75,14 +75,14 @@ all:		${NAME}
 
 clean:
 			@echo ""
-			@echo "${CYAN}Deleting $(NAME) objects ...${RESET}"
+			@echo "${CYAN}Deleting $(NAME) Objects ...${RESET}"
 			${RM} -r ${OBJSDIR}
 			make -C ${LIBFTDIR} clean
 			make -C ${MLXDIR} clean
 
 fclean:		clean
 			@echo ""
-			@echo "${CYAN}Deleting $(NAME) executable ...${RESET}"
+			@echo "${CYAN}Deleting $(NAME) Executable ...${RESET}"
 			${RM} ${NAME}
 			make -C ${LIBFTDIR} fclean
 

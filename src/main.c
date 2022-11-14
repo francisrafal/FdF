@@ -6,7 +6,7 @@
 /*   By: frafal <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:17:05 by frafal            #+#    #+#             */
-/*   Updated: 2022/11/14 15:16:59 by frafal           ###   ########.fr       */
+/*   Updated: 2022/11/14 16:34:30 by frafal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,9 @@ int	main(int argc, char **argv)
 {
 	(void)argc;
 	(void)argv;
-	ft_printf("Hello World!");
+	void *mlx;
+
+	mlx = mlx_init();
+	ft_printf("Hello");
 	return (0);
 }

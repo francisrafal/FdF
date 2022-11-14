@@ -6,7 +6,7 @@
 #    By: frafal <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 20:59:46 by frafal            #+#    #+#              #
-#    Updated: 2022/11/14 16:17:02 by frafal           ###   ########.fr        #
+#    Updated: 2022/11/14 16:35:45 by frafal           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -63,7 +63,7 @@ RESET		:= \033[0m
 
 ${NAME}:	${OBJS}
 			@echo ""
-			@echo "${CYAN}Compilation Of ${NAME} ...${RESET}"
+			@echo "${CYAN}Compiling ${NAME} ...${RESET}"
 			ar rcs ${NAME} ${OBJS}
 			@echo ""
 			@echo "${CYAN}${NAME} Created${RESET}"
