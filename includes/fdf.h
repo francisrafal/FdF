@@ -6,7 +6,7 @@
 /*   By: frafal <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 12:50:01 by frafal            #+#    #+#             */
-/*   Updated: 2022/11/21 17:05:03 by frafal           ###   ########.fr       */
+/*   Updated: 2022/11/21 17:54:32 by frafal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,27 @@
 # include <math.h>
 # include <X11/keysym.h>
 
-# define WIN_WIDTH 1920
-# define WIN_HEIGHT 1080
-# define GREEN 0x0000FF00
+# define WIN_W	1920
+# define WIN_H	1080
+# define GREEN	0x0000FF00
+# define RED	0x00FF0000
+# define WHITE	0x00FFFFFF
+# define DGREEN	0x00006600
 
-typedef struct	s_data {
+typedef struct	s_img
+{
+	void		*mlx_img;
+	char		*addr;
+	int			bpp;
+	int			line_len;
+	int			endian;
+}				t_img;
+
+typedef struct	s_data
+{
 	void		*mlx_ptr;
 	void		*win_ptr;
+	t_img		img;
 }				t_data;
 
 typedef struct	s_rect
