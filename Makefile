@@ -6,7 +6,7 @@
 #    By: frafal <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/07 10:02:44 by frafal            #+#    #+#              #
-#    Updated: 2022/11/14 16:35:20 by frafal           ###   ########.fr        #
+#    Updated: 2022/11/21 10:51:27 by frafal           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,7 +34,7 @@ LIBFT		:= ${LIBFTDIR}libft.a
 MLXDIR		:= ./minilibx-linux/
 MLX			:= ${MLXDIR}libmlx_Linux.a
 
-LIBS		:= -L${LIBFTDIR} -L${MLXDIR} -lft -lmlx_Linux -lXext -lX11 
+LIBS		:= -L${LIBFTDIR} -L${MLXDIR} -lft -lmlx_Linux -lXext -lX11 -lm
 INCS		:= -I${HEADDIR} -I${LIBFTDIR} -I${MLXDIR}
 
 CYAN		:= \033[0;36m
