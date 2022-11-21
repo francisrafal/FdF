@@ -6,7 +6,7 @@
 /*   By: frafal <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:17:05 by frafal            #+#    #+#             */
-/*   Updated: 2022/11/21 18:00:47 by frafal           ###   ########.fr       */
+/*   Updated: 2022/11/21 18:06:15 by frafal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	img_pix_put(t_img *img, int x, int y, int color)
 {
-	char *pixel;
+	char	*pixel;
 
 	pixel = img->addr + y * img->line_len + x * (img->bpp / 8);
 	*(int *)pixel = color;
@@ -23,12 +23,14 @@ void	img_pix_put(t_img *img, int x, int y, int color)
 void	draw_circle(t_img *img, int color)
 {
 	double_t	phi;
+	int			x;
+	int			y;
 
 	phi = 0;
 	while (phi < 2 * M_PI)
 	{
-		int x = WIN_W / 10 * cos(phi) + WIN_W / 2;
-		int y = WIN_W / 10 * sin(phi) + WIN_H / 2;
+		x = WIN_W / 10 * cos(phi) + WIN_W / 2;
+		y = WIN_W / 10 * sin(phi) + WIN_H / 2;
 		img_pix_put(img, x, y, color);
 		phi += 0.001;
 	}
@@ -36,7 +38,7 @@ void	draw_circle(t_img *img, int color)
 
 void	draw_vline(t_img *img, int x, int color)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < WIN_H)
@@ -57,7 +59,8 @@ void	draw_rect(t_img *img, t_rect rect)
 		j = rect.x;
 		while (j < rect.x + rect.width)
 		{
-			if (i == rect.y || i == rect.y + rect.height - 1 || j == rect.x || j == rect.x + rect.width - 1)
+			if (i == rect.y || i == rect.y + rect.height - 1
+				|| j == rect.x || j == rect.x + rect.width - 1)
 				img_pix_put(img, j, i, rect.color);
 			j++;
 		}
@@ -90,8 +93,10 @@ int	loop_hook(t_data *data)
 	render_background(&data->img, DGREEN);
 	draw_vline(&data->img, WIN_W / 2, WHITE);
 	draw_circle(&data->img, WHITE);
-	draw_rect(&data->img, (t_rect){0, WIN_H / 4, WIN_W / 10, WIN_H / 2, WHITE});
-	draw_rect(&data->img, (t_rect){WIN_W / 10 * 9, WIN_H / 4, WIN_W / 10, WIN_H / 2, WHITE});
+	draw_rect(&data->img,
+			(t_rect){0, WIN_H / 4, WIN_W / 10, WIN_H / 2, WHITE});
+	draw_rect(&data->img,
+			(t_rect){WIN_W / 10 * 9, WIN_H / 4, WIN_W / 10, WIN_H / 2, WHITE});
 	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img.mlx_img, 0, 0);
 	return (0);
 }
@@ -117,7 +122,6 @@ int	main(int argc, char **argv)
 	// TESTARR
 	// TRANSFORM MAP
 	// DRAW MAP
-	
 	data.mlx_ptr = mlx_init();
 	if (data.mlx_ptr == NULL)
 	{
