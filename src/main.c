@@ -6,16 +6,11 @@
 /*   By: frafal <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:17:05 by frafal            #+#    #+#             */
-/*   Updated: 2022/11/21 11:54:08 by frafal           ###   ########.fr       */
+/*   Updated: 2022/11/21 13:43:53 by frafal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#include "mlx.h"
-#include <math.h>
-
-//REMOVE BEFORE SUBMISSION
-#include <stdio.h>
+#include "fdf.h"
 
 void	draw_circle(void *mlx_ptr, void *win_ptr, int color)
 {
@@ -43,17 +38,18 @@ void	draw_vline(void *mlx_ptr, void *win_ptr, int x, int color)
 	}
 }
 
-int	key_hook(int keycode, void *param)
+int	key_hook(int keycode, t_data *data)
 {
 	(void)keycode;
-	void	*mlx_ptr;
-	void	*win_ptr;
-
-	// CAREFUL HERE, COULD NOT WORK WITH DIFFERENT WINDOW SIZES!!!!!!!!
-	// FIND A DIFFERENT SOLUTION LATER
-	mlx_ptr = param;
-	win_ptr = param + 9984;
-	mlx_string_put(mlx_ptr, win_ptr, 50, 50, 0x00FF0000, "Let's get the games started!");
+	if (keycode == 65307)
+	{
+		mlx_destroy_window(data->mlx_ptr, data->win_ptr);
+		mlx_destroy_display(data->mlx_ptr);
+		free(data->mlx_ptr);
+		free(data);
+		exit(0);
+	}
+	//ft_putnbr_fd(keycode, 1);
 	return (0);
 }
 
@@ -61,29 +57,33 @@ int	main(int argc, char **argv)
 {
 	(void)argc;
 	(void)argv;
-	void	*mlx_ptr;
-	void	*win_ptr;
+	t_data	*data;
 	int		green;
 
+	data = malloc(sizeof(t_data));
+
 	green = 0x0000FF00; 
-	mlx_ptr = mlx_init();
-	if (mlx_ptr == NULL)
+	data->mlx_ptr = mlx_init();
+	if (data->mlx_ptr == NULL)
 	{
 		ft_putstr_fd("Failed to set up the connection to the X server\n", 2);
 		return (-1);
 	}
-	win_ptr = mlx_new_window(mlx_ptr, 1280, 720, "FdF");
-	if (win_ptr == NULL)
+	data->win_ptr = mlx_new_window(data->mlx_ptr, 1280, 720, "FdF");
+	if (data->win_ptr == NULL)
 	{
 		ft_putstr_fd("Failed to create a new window\n", 2);
 		return (-1);
 	}
-	ft_printf("mlx_ptr: %p\n", mlx_ptr);
-	ft_printf("win_ptr: %p\n", win_ptr);
-	ft_printf("win_ptr - mlx_ptr: %d\n", win_ptr - mlx_ptr);
-	draw_vline(mlx_ptr, win_ptr, 640, green);
-	draw_circle(mlx_ptr, win_ptr, green);
-	mlx_key_hook(win_ptr, key_hook, mlx_ptr);
-	mlx_loop(mlx_ptr);
+	// READ FILE
+	// PARSE FILE TO ARR
+	// TESTARR
+	// TRANSFORM MAP
+	// DRAW MAP
+	
+//	draw_vline(data->mlx_ptr, data->win_ptr, 640, green);
+//	draw_circle(data->mlx_ptr, data->win_ptr, green);
+	mlx_key_hook(data->win_ptr, key_hook, data);
+	mlx_loop(data->mlx_ptr);
 	return (0);
 }

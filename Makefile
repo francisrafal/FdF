@@ -6,7 +6,7 @@
 #    By: frafal <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/07 10:02:44 by frafal            #+#    #+#              #
-#    Updated: 2022/11/21 10:51:27 by frafal           ###   ########.fr        #
+#    Updated: 2022/11/21 13:27:07 by frafal           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME		:= fdf
 CC			:= cc
 RM	    	:= rm -f
 FLAGS		:= -Wall -Wextra -Werror
-DEBUG		:=
+DEBUG		:= -g
 
 HEADDIR		:= ./includes/
 HEADLIST	:= fdf.h
