@@ -6,7 +6,7 @@
 #    By: frafal <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/07 10:02:44 by frafal            #+#    #+#              #
-#    Updated: 2022/11/21 13:27:07 by frafal           ###   ########.fr        #
+#    Updated: 2022/11/21 14:45:15 by frafal           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -57,7 +57,7 @@ ${MLX}:
 			git submodule update
 			make -C ${MLXDIR}
 
-${OBJSDIR}%.o:	${SRCSDIR}%.c compiling
+${OBJSDIR}%.o:	${SRCSDIR}%.c ${HEADERS} compiling
 			${CC} ${FLAGS} ${DEBUG} ${INCS} -c $< -o $@
 
 ${OBJSDIR}:

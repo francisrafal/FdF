@@ -1,3 +1,6 @@
 *.swp
 fdf
 test_maps
+*.o
+obj/
+libft/libft.a
