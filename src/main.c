@@ -71,6 +71,7 @@ void	draw_rect(t_img *img, t_rect rect)
 t_map	*generate_map(void)
 {
 	t_map	*map;
+	t_pt	*cur;
 	t_pt	pt;
 	int		i;
 	int		j;
@@ -78,8 +79,8 @@ t_map	*generate_map(void)
 	map = malloc(sizeof(t_map));
 	if (map == NULL)
 		return (NULL);
-	map->x_dim = 1;
-	map->y_dim = 3;
+	map->x_dim = 10;
+	map->y_dim = 10;
 	map->pt_arr = malloc(map->x_dim * map->y_dim * sizeof(t_pt));
 	if (map->pt_arr == NULL)
 		return (NULL);
@@ -94,11 +95,12 @@ t_map	*generate_map(void)
 		j = 0;
 		while (j < map->x_dim)
 		{	
-			(map->pt_arr + i * map->y_dim + j)->x = pt.x;
-			(map->pt_arr + i * map->y_dim + j)->y = pt.y;
-			(map->pt_arr + i * map->y_dim + j)->z = pt.z;
+			cur = map->pt_arr + i * map->x_dim + j;
+			cur->x = pt.x;
+			cur->y = pt.y;
+			cur->z = pt.z;
 			pt.x += map->space;
-			//pt.z += 0xFF;
+			pt.z -= 10;
 			ft_printf("%d\n", pt.z);
 			j++;
 		}
@@ -193,7 +195,7 @@ int	loop_hook(t_data *data)
 	//draw_rect(&data->img,
 	//		(t_rect){WIN_W / 10 * 9, WIN_H / 4, WIN_W / 10, WIN_H / 2, WHITE});
 	map = generate_map();
-	map = transform_map(map);
+	//map = transform_map(map);
 	draw_grid(&data->img, map);
 	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img.mlx_img, 0, 0);
 	free(map->pt_arr);
