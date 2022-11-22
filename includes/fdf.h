@@ -27,31 +27,6 @@
 # define DGREEN	0x00006600
 # define BLACK	0x00000000
 
-typedef struct s_img
-{
-	void	*mlx_img;
-	char	*addr;
-	int		bpp;
-	int		line_len;
-	int		endian;
-}			t_img;
-
-typedef struct s_data
-{
-	void	*mlx_ptr;
-	void	*win_ptr;
-	t_img	img;
-}			t_data;
-
-typedef struct s_rect
-{
-	int		x;
-	int		y;
-	int		width;
-	int		height;
-	int		color;
-}			t_rect;
-
 typedef struct s_pt
 {
 	int		x;
@@ -73,5 +48,31 @@ typedef struct s_matrix3x3
 	t_pt	j;
 	t_pt	k;
 }			t_matrix3x3;	
+
+typedef struct s_img
+{
+	void	*mlx_img;
+	char	*addr;
+	int		bpp;
+	int		line_len;
+	int		endian;
+}			t_img;
+
+typedef struct s_data
+{
+	void	*mlx_ptr;
+	void	*win_ptr;
+	t_img	img;
+	t_map	*map;
+}			t_data;
+
+typedef struct s_rect
+{
+	int		x;
+	int		y;
+	int		width;
+	int		height;
+	int		color;
+}			t_rect;
 
 #endif

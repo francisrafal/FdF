@@ -79,8 +79,8 @@ t_map	*generate_map(void)
 	map = malloc(sizeof(t_map));
 	if (map == NULL)
 		return (NULL);
-	map->x_dim = 10;
-	map->y_dim = 10;
+	map->x_dim = 30;
+	map->y_dim = 30;
 	map->pt_arr = malloc(map->x_dim * map->y_dim * sizeof(t_pt));
 	if (map->pt_arr == NULL)
 		return (NULL);
@@ -117,7 +117,7 @@ t_map	*transform_map(t_map *map)
 	mat.i.x = 1;
 	mat.i.y = 0;
 	mat.i.z = 0;
-	mat.j.x = 0;
+	mat.j.x = 1;
 	mat.j.y = 1;
 	mat.j.z = 0;
 	mat.k.x = 0;
@@ -194,12 +194,9 @@ int	loop_hook(t_data *data)
 	//		(t_rect){0, WIN_H / 4, WIN_W / 10, WIN_H / 2, WHITE});
 	//draw_rect(&data->img,
 	//		(t_rect){WIN_W / 10 * 9, WIN_H / 4, WIN_W / 10, WIN_H / 2, WHITE});
-	map = generate_map();
-	//map = transform_map(map);
+	map = data->map;
 	draw_grid(&data->img, map);
 	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img.mlx_img, 0, 0);
-	free(map->pt_arr);
-	free(map);
 	return (0);
 }
 
@@ -218,12 +215,14 @@ int	main(int argc, char **argv)
 	(void)argc;
 	(void)argv;
 	t_data	data;
-
 	// READ FILE
 	// PARSE FILE TO ARR
 	// TESTARR
 	// TRANSFORM MAP
 	// DRAW MAP
+
+	data.map = generate_map();
+	data.map = transform_map(data.map);
 	data.mlx_ptr = mlx_init();
 	if (data.mlx_ptr == NULL)
 	{
@@ -243,6 +242,8 @@ int	main(int argc, char **argv)
 	mlx_loop(data.mlx_ptr);
 	mlx_destroy_image(data.mlx_ptr, data.img.mlx_img);
 	mlx_destroy_display(data.mlx_ptr);
+	free(data.map->pt_arr);
+	free(data.map);
 	free(data.mlx_ptr);
 	return (0);
 }
