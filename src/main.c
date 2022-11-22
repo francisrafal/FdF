@@ -79,14 +79,13 @@ t_map	*generate_map(void)
 	map = malloc(sizeof(t_map));
 	if (map == NULL)
 		return (NULL);
-	map->x_dim = 30;
-	map->y_dim = 30;
+	map->x_dim = 10;
+	map->y_dim = 10;
 	map->pt_arr = malloc(map->x_dim * map->y_dim * sizeof(t_pt));
 	if (map->pt_arr == NULL)
 		return (NULL);
 	map->space = 10;
-	pt.z = WHITE;
-	ft_printf("%d\n", pt.z);
+	pt.z = 0;
 	pt.y = 0;
 	i = 0;
 	while (i < map->y_dim)
@@ -95,13 +94,14 @@ t_map	*generate_map(void)
 		j = 0;
 		while (j < map->x_dim)
 		{	
+			// FIND WAY FOR Z HERE:
+			if (j == 5)
+				pt.z = 10;
 			cur = map->pt_arr + i * map->x_dim + j;
 			cur->x = pt.x;
 			cur->y = pt.y;
 			cur->z = pt.z;
 			pt.x += map->space;
-			pt.z -= 10;
-			ft_printf("%d\n", pt.z);
 			j++;
 		}
 		pt.y += map->space;
@@ -110,19 +110,8 @@ t_map	*generate_map(void)
 	return (map);
 }
 
-t_map	*transform_map(t_map *map)
+t_map	*transform_map(t_map *map, t_matrix3x3 mat)
 {
-	t_matrix3x3	mat;
-
-	mat.i.x = 1;
-	mat.i.y = 0;
-	mat.i.z = 0;
-	mat.j.x = 1;
-	mat.j.y = 1;
-	mat.j.z = 0;
-	mat.k.x = 0;
-	mat.k.y = 0;
-	mat.k.z = 1;
 
 	int		i;
 	t_pt	pt;
@@ -133,9 +122,9 @@ t_map	*transform_map(t_map *map)
 		pt.x = (map->pt_arr + i)->x;
 		pt.y = (map->pt_arr + i)->y;
 		pt.z = (map->pt_arr + i)->z;
-		(map->pt_arr + i)->x = pt.x * mat.i.x + pt.y * mat.j.x + pt.z * mat.k.x;
-		(map->pt_arr + i)->y = pt.x * mat.i.y + pt.y * mat.j.y + pt.z * mat.k.y;
-		(map->pt_arr + i)->z = pt.x * mat.i.z + pt.y * mat.j.z + pt.z * mat.k.z;
+		(map->pt_arr + i)->x = pt.x * mat.c1r1 + pt.y * mat.c2r1 + pt.z * mat.c3r1;
+		(map->pt_arr + i)->y = pt.x * mat.c1r2 + pt.y * mat.c2r2 + pt.z * mat.c3r2;
+		(map->pt_arr + i)->z = pt.x * mat.c1r3 + pt.y * mat.c2r3 + pt.z * mat.c3r3;
 		i++;
 	}
 	return (map);
@@ -149,8 +138,8 @@ void	draw_grid(t_img *img, t_map *map)
 
 	offset.x = 0;
 	offset.y = 0;
-	//offset.x = WIN_W / 2 - map->space * map->x_dim / 2;
-	//offset.y = WIN_H / 2 - map->space * map->y_dim / 2;
+	offset.x = WIN_W / 2 - map->space * map->x_dim / 2;
+	offset.y = WIN_H / 2 - map->space * map->y_dim / 2;
 	offset.z = 0;
 
 	i = 0;
@@ -159,7 +148,7 @@ void	draw_grid(t_img *img, t_map *map)
 		pt.x = (map->pt_arr + i)->x + offset.x;
 		pt.y = (map->pt_arr + i)->y + offset.y;
 		pt.z = (map->pt_arr + i)->z + offset.z;
-		img_pix_put(img, pt.x, pt.y, pt.z);
+		img_pix_put(img, pt.x, pt.y, WHITE);
 		i++;
 	}
 }
@@ -222,7 +211,7 @@ int	main(int argc, char **argv)
 	// DRAW MAP
 
 	data.map = generate_map();
-	data.map = transform_map(data.map);
+	data.map = transform_map(data.map, (t_matrix3x3){1, 0, 0, 0, 0, 1, 0, -1, 0});
 	data.mlx_ptr = mlx_init();
 	if (data.mlx_ptr == NULL)
 	{

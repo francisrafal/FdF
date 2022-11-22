@@ -44,9 +44,15 @@ typedef struct s_map
 
 typedef struct s_matrix3x3
 {
-	t_pt	i;
-	t_pt	j;
-	t_pt	k;
+	float_t		c1r1;
+	float_t		c1r2;
+	float_t		c1r3;
+	float_t		c2r1;
+	float_t		c2r2;
+	float_t		c2r3;
+	float_t		c3r1;
+	float_t		c3r2;
+	float_t		c3r3;
 }			t_matrix3x3;	
 
 typedef struct s_img
