@@ -6,7 +6,7 @@
 /*   By: frafal <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 12:50:01 by frafal            #+#    #+#             */
-/*   Updated: 2022/11/21 18:02:54 by frafal           ###   ########.fr       */
+/*   Updated: 2022/11/22 13:15:48 by frafal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,14 @@
 # include <math.h>
 # include <X11/keysym.h>
 
-# define WIN_W	1920
-# define WIN_H	1080
-# define GREEN	0x0000FF00
+# define WIN_W	1280
+# define WIN_H	720
 # define RED	0x00FF0000
+# define GREEN	0x0000FF00
+# define BLUE	0x000000FF
 # define WHITE	0x00FFFFFF
 # define DGREEN	0x00006600
+# define BLACK	0x00000000
 
 typedef struct s_img
 {
@@ -49,5 +51,12 @@ typedef struct s_rect
 	int		height;
 	int		color;
 }			t_rect;
+
+typedef struct s_pt
+{
+	int		x;
+	int		y;
+	int		z;
+}			t_pt;
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: frafal <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:17:05 by frafal            #+#    #+#             */
-/*   Updated: 2022/11/21 18:06:15 by frafal           ###   ########.fr       */
+/*   Updated: 2022/11/22 13:57:57 by frafal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ void	draw_circle(t_img *img, int color)
 	phi = 0;
 	while (phi < 2 * M_PI)
 	{
-		x = WIN_W / 10 * cos(phi) + WIN_W / 2;
-		y = WIN_W / 10 * sin(phi) + WIN_H / 2;
+		x = round(WIN_W / 10 * cos(phi) + WIN_W / 2);
+		y = round(WIN_W / 10 * sin(phi) + WIN_H / 2);
 		img_pix_put(img, x, y, color);
 		phi += 0.001;
 	}
@@ -68,6 +68,51 @@ void	draw_rect(t_img *img, t_rect rect)
 	}
 }
 
+void	draw_grid(t_img *img)
+{
+	int x_dim = 100;
+	int y_dim = 100;
+	t_pt	*map = malloc(x_dim * y_dim * sizeof(t_pt));
+	int	i;
+	int j;
+	int	x;
+	int	y;
+	int	z;
+	int space;
+	(void)img;
+
+	z = 0;
+	space = 5;
+	y = 0;
+	i = 0;
+	while (i < y_dim)
+	{
+		x = 0;
+		j = 0;
+		while (j < x_dim)
+		{	
+			(map + i * y_dim + j)->x = x;
+			(map + i * y_dim + j)->y = y;
+			(map + i * y_dim + j)->z = z;
+			x += space;
+			z += 1000;
+			j++;
+		}
+		y += space;
+		i++;
+	}
+
+	i = 0;
+	while (i < x_dim * y_dim)
+	{
+		x = (map + i)->x + WIN_W / 2 - space * x_dim / 2;
+		y = (map + i)->y + WIN_H / 2 - space * y_dim / 2;
+		img_pix_put(img, x, y, (map + i)->z);
+		i++;
+	}
+	free(map);
+}
+
 void	render_background(t_img *img, int color)
 {
 	int	i;
@@ -90,13 +135,14 @@ int	loop_hook(t_data *data)
 {
 	if (data->win_ptr == NULL)
 		return (1);
-	render_background(&data->img, DGREEN);
-	draw_vline(&data->img, WIN_W / 2, WHITE);
-	draw_circle(&data->img, WHITE);
-	draw_rect(&data->img,
-			(t_rect){0, WIN_H / 4, WIN_W / 10, WIN_H / 2, WHITE});
-	draw_rect(&data->img,
-			(t_rect){WIN_W / 10 * 9, WIN_H / 4, WIN_W / 10, WIN_H / 2, WHITE});
+	//render_background(&data->img, BLACK);
+	//draw_vline(&data->img, WIN_W / 2, WHITE);
+	//draw_circle(&data->img, WHITE);
+	//draw_rect(&data->img,
+	//		(t_rect){0, WIN_H / 4, WIN_W / 10, WIN_H / 2, WHITE});
+	//draw_rect(&data->img,
+	//		(t_rect){WIN_W / 10 * 9, WIN_H / 4, WIN_W / 10, WIN_H / 2, WHITE});
+	draw_grid(&data->img);
 	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img.mlx_img, 0, 0);
 	return (0);
 }
