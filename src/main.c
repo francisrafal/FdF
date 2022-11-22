@@ -6,7 +6,7 @@
 /*   By: frafal <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 14:17:05 by frafal            #+#    #+#             */
-/*   Updated: 2022/11/22 13:57:57 by frafal           ###   ########.fr       */
+/*   Updated: 2022/11/22 14:55:35 by frafal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,49 +68,98 @@ void	draw_rect(t_img *img, t_rect rect)
 	}
 }
 
-void	draw_grid(t_img *img)
+t_map	*generate_map(void)
 {
-	int x_dim = 100;
-	int y_dim = 100;
-	t_pt	*map = malloc(x_dim * y_dim * sizeof(t_pt));
-	int	i;
-	int j;
-	int	x;
-	int	y;
-	int	z;
-	int space;
-	(void)img;
+	t_map	*map;
+	t_pt	pt;
+	int		i;
+	int		j;
 
-	z = 0;
-	space = 5;
-	y = 0;
+	map = malloc(sizeof(t_map));
+	if (map == NULL)
+		return (NULL);
+	map->x_dim = 1;
+	map->y_dim = 3;
+	map->pt_arr = malloc(map->x_dim * map->y_dim * sizeof(t_pt));
+	if (map->pt_arr == NULL)
+		return (NULL);
+	map->space = 10;
+	pt.z = WHITE;
+	ft_printf("%d\n", pt.z);
+	pt.y = 0;
 	i = 0;
-	while (i < y_dim)
+	while (i < map->y_dim)
 	{
-		x = 0;
+		pt.x = 0;
 		j = 0;
-		while (j < x_dim)
+		while (j < map->x_dim)
 		{	
-			(map + i * y_dim + j)->x = x;
-			(map + i * y_dim + j)->y = y;
-			(map + i * y_dim + j)->z = z;
-			x += space;
-			z += 1000;
+			(map->pt_arr + i * map->y_dim + j)->x = pt.x;
+			(map->pt_arr + i * map->y_dim + j)->y = pt.y;
+			(map->pt_arr + i * map->y_dim + j)->z = pt.z;
+			pt.x += map->space;
+			//pt.z += 0xFF;
+			ft_printf("%d\n", pt.z);
 			j++;
 		}
-		y += space;
+		pt.y += map->space;
 		i++;
 	}
+	return (map);
+}
+
+t_map	*transform_map(t_map *map)
+{
+	t_matrix3x3	mat;
+
+	mat.i.x = 1;
+	mat.i.y = 0;
+	mat.i.z = 0;
+	mat.j.x = 0;
+	mat.j.y = 1;
+	mat.j.z = 0;
+	mat.k.x = 0;
+	mat.k.y = 0;
+	mat.k.z = 1;
+
+	int		i;
+	t_pt	pt;
 
 	i = 0;
-	while (i < x_dim * y_dim)
+	while (i < map->x_dim * map->y_dim)
 	{
-		x = (map + i)->x + WIN_W / 2 - space * x_dim / 2;
-		y = (map + i)->y + WIN_H / 2 - space * y_dim / 2;
-		img_pix_put(img, x, y, (map + i)->z);
+		pt.x = (map->pt_arr + i)->x;
+		pt.y = (map->pt_arr + i)->y;
+		pt.z = (map->pt_arr + i)->z;
+		(map->pt_arr + i)->x = pt.x * mat.i.x + pt.y * mat.j.x + pt.z * mat.k.x;
+		(map->pt_arr + i)->y = pt.x * mat.i.y + pt.y * mat.j.y + pt.z * mat.k.y;
+		(map->pt_arr + i)->z = pt.x * mat.i.z + pt.y * mat.j.z + pt.z * mat.k.z;
 		i++;
 	}
-	free(map);
+	return (map);
+}
+
+void	draw_grid(t_img *img, t_map *map)
+{
+	int		i;
+	t_pt	pt;
+	t_pt	offset;
+
+	offset.x = 0;
+	offset.y = 0;
+	//offset.x = WIN_W / 2 - map->space * map->x_dim / 2;
+	//offset.y = WIN_H / 2 - map->space * map->y_dim / 2;
+	offset.z = 0;
+
+	i = 0;
+	while (i < map->x_dim * map->y_dim)
+	{
+		pt.x = (map->pt_arr + i)->x + offset.x;
+		pt.y = (map->pt_arr + i)->y + offset.y;
+		pt.z = (map->pt_arr + i)->z + offset.z;
+		img_pix_put(img, pt.x, pt.y, pt.z);
+		i++;
+	}
 }
 
 void	render_background(t_img *img, int color)
@@ -133,6 +182,7 @@ void	render_background(t_img *img, int color)
 
 int	loop_hook(t_data *data)
 {
+	t_map	*map;
 	if (data->win_ptr == NULL)
 		return (1);
 	//render_background(&data->img, BLACK);
@@ -142,8 +192,12 @@ int	loop_hook(t_data *data)
 	//		(t_rect){0, WIN_H / 4, WIN_W / 10, WIN_H / 2, WHITE});
 	//draw_rect(&data->img,
 	//		(t_rect){WIN_W / 10 * 9, WIN_H / 4, WIN_W / 10, WIN_H / 2, WHITE});
-	draw_grid(&data->img);
+	map = generate_map();
+	map = transform_map(map);
+	draw_grid(&data->img, map);
 	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img.mlx_img, 0, 0);
+	free(map->pt_arr);
+	free(map);
 	return (0);
 }
 

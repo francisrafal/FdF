@@ -6,7 +6,7 @@
 /*   By: frafal <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 12:50:01 by frafal            #+#    #+#             */
-/*   Updated: 2022/11/22 13:15:48 by frafal           ###   ########.fr       */
+/*   Updated: 2022/11/22 14:30:09 by frafal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,5 +58,20 @@ typedef struct s_pt
 	int		y;
 	int		z;
 }			t_pt;
+
+typedef struct s_map
+{
+	t_pt	*pt_arr;
+	int		x_dim;
+	int		y_dim;	
+	int		space;
+}			t_map;
+
+typedef struct s_matrix3x3
+{
+	t_pt	i;
+	t_pt	j;
+	t_pt	k;
+}			t_matrix3x3;	
 
 #endif
