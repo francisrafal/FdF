@@ -81,8 +81,8 @@ t_map	*generate_map(void)
 	map = malloc(sizeof(t_map));
 	if (map == NULL)
 		return (NULL);
-	map->x_dim = 30;
-	map->y_dim = 30;
+	map->x_dim = 50;
+	map->y_dim = 50;
 	map->pt_arr = malloc(map->x_dim * map->y_dim * sizeof(t_pt));
 	if (map->pt_arr == NULL)
 		return (NULL);
