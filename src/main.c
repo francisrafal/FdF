@@ -79,12 +79,12 @@ t_map	*generate_map(void)
 	map = malloc(sizeof(t_map));
 	if (map == NULL)
 		return (NULL);
-	map->x_dim = 10;
-	map->y_dim = 10;
+	map->x_dim = 30;
+	map->y_dim = 30;
 	map->pt_arr = malloc(map->x_dim * map->y_dim * sizeof(t_pt));
 	if (map->pt_arr == NULL)
 		return (NULL);
-	map->space = 10;
+	map->space = 1;
 	pt.z = 0;
 	pt.y = 0;
 	i = 0;
@@ -94,13 +94,10 @@ t_map	*generate_map(void)
 		j = 0;
 		while (j < map->x_dim)
 		{	
-			// FIND WAY FOR Z HERE:
-			if (j == 5)
-				pt.z = 10;
 			cur = map->pt_arr + i * map->x_dim + j;
-			cur->x = pt.x;
-			cur->y = pt.y;
-			cur->z = pt.z;
+			*cur = pt;
+			if (j == map->x_dim / 2 || j == 0 || j == map->x_dim - 1)
+				cur->z = 10;
 			pt.x += map->space;
 			j++;
 		}
@@ -115,16 +112,16 @@ t_map	*transform_map(t_map *map, t_matrix3x3 mat)
 
 	int		i;
 	t_pt	pt;
+	t_pt	*cur;
 
 	i = 0;
 	while (i < map->x_dim * map->y_dim)
 	{
-		pt.x = (map->pt_arr + i)->x;
-		pt.y = (map->pt_arr + i)->y;
-		pt.z = (map->pt_arr + i)->z;
-		(map->pt_arr + i)->x = pt.x * mat.c1r1 + pt.y * mat.c2r1 + pt.z * mat.c3r1;
-		(map->pt_arr + i)->y = pt.x * mat.c1r2 + pt.y * mat.c2r2 + pt.z * mat.c3r2;
-		(map->pt_arr + i)->z = pt.x * mat.c1r3 + pt.y * mat.c2r3 + pt.z * mat.c3r3;
+		cur = map->pt_arr + i;
+		pt = *cur;
+		cur->x = pt.x * mat.c1r1 + pt.y * mat.c2r1 + pt.z * mat.c3r1;
+		cur->y = pt.x * mat.c1r2 + pt.y * mat.c2r2 + pt.z * mat.c3r2;
+		cur->z = pt.x * mat.c1r3 + pt.y * mat.c2r3 + pt.z * mat.c3r3;
 		i++;
 	}
 	return (map);
@@ -209,9 +206,17 @@ int	main(int argc, char **argv)
 	// TESTARR
 	// TRANSFORM MAP
 	// DRAW MAP
-
+	t_matrix3x3 rot_x_90;
+	t_matrix3x3 rot_z_45;
+	t_matrix3x3 rot_x_iso;
+	
+	rot_x_90 = (t_matrix3x3){1, 0, 0, 0, 0, 1, 0, -1, 0};
+	rot_z_45 = (t_matrix3x3){cos(M_PI_4), 0, sin(M_PI_4), 0, 1, 0, -sin(M_PI_4), 0, cos(M_PI_4)};
+	rot_x_iso = (t_matrix3x3){1, 0, 0, 0, cos(ISO), -sin(ISO), 0, sin(ISO), cos(ISO)};
 	data.map = generate_map();
-	data.map = transform_map(data.map, (t_matrix3x3){1, 0, 0, 0, 0, 1, 0, -1, 0});
+	data.map = transform_map(data.map, rot_x_90);
+	data.map = transform_map(data.map, rot_z_45);
+	data.map = transform_map(data.map, rot_x_iso);
 	data.mlx_ptr = mlx_init();
 	if (data.mlx_ptr == NULL)
 	{

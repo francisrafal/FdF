@@ -26,6 +26,7 @@
 # define WHITE	0x00FFFFFF
 # define DGREEN	0x00006600
 # define BLACK	0x00000000
+# define ISO	0.6154
 
 typedef struct s_pt
 {
