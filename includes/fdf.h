@@ -30,9 +30,9 @@
 
 typedef struct s_pt
 {
-	int		x;
-	int		y;
-	int		z;
+	float_t		x;
+	float_t		y;
+	float_t		z;
 }			t_pt;
 
 typedef struct s_map

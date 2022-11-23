@@ -16,6 +16,8 @@ void	img_pix_put(t_img *img, int x, int y, int color)
 {
 	char	*pixel;
 
+	if (x < 0 || y < 0)
+		return ;
 	pixel = img->addr + y * img->line_len + x * (img->bpp / 8);
 	*(int *)pixel = color;
 }
@@ -84,7 +86,7 @@ t_map	*generate_map(void)
 	map->pt_arr = malloc(map->x_dim * map->y_dim * sizeof(t_pt));
 	if (map->pt_arr == NULL)
 		return (NULL);
-	map->space = 1;
+	map->space = 30;
 	pt.z = 0;
 	pt.y = 0;
 	i = 0;
@@ -127,17 +129,88 @@ t_map	*transform_map(t_map *map, t_matrix3x3 mat)
 	return (map);
 }
 
-void	draw_grid(t_img *img, t_map *map)
+int	draw_line_low(t_img *img, t_pt start, t_pt end, int color)
+{
+	int dx;
+	int dy;
+	int err;
+	int yi;
+
+	dx = end.x - start.x;
+	dy = end.y - start.y;
+	yi = 1;
+	if (dy < 0)
+		{
+			yi = -1;
+			dy = -dy;
+		}
+	err = 2 * dy - dx;
+	while (start.x < end.x)
+	{
+		img_pix_put(img, start.x, start.y, color);
+		if (err > 0)
+			{
+				start.y += yi;
+				err = err + (2 * (dy - dx));
+			}
+		else
+			err = err + 2 * dy;
+		start.x++;
+	}
+	return (0);
+}
+
+int	draw_line_high(t_img *img, t_pt start, t_pt end, int color)
+{
+	int dx;
+	int dy;
+	int err;
+	int xi;
+
+	dx = end.x - start.x;
+	dy = end.y - start.y;
+	xi = 1;
+	if (dx < 0)
+		{
+			xi = -1;
+			dx = -dx;
+		}
+	err = 2 * dx - dy;
+	while (start.y < end.y)
+	{
+		img_pix_put(img, start.x, start.y, color);
+		if (err > 0)
+			{
+				start.x += xi;
+				err = err + (2 * (dx - dy));
+			}
+		else
+			err = err + 2 * dx;
+		start.y++;
+	}
+	return (0);
+}
+
+int	draw_line(t_img *img, t_pt start, t_pt end, int color)
+{
+	if (fabsf(end.y - start.y) < fabsf(end.x - start.x))
+	{
+		if (start.x > end.x)
+			return(draw_line_low(img, end, start, color));
+		return(draw_line_low(img, start, end, color));
+	}
+	if (start.y > end.y)
+		return(draw_line_high(img, end, start, color));
+	return(draw_line_high(img, start, end, color));
+	return (-1);
+}
+
+void	draw_map(t_img *img, t_map *map, t_pt offset)
 {
 	int		i;
 	t_pt	pt;
-	t_pt	offset;
-
-	offset.x = 0;
-	offset.y = 0;
-	offset.x = WIN_W / 2 - map->space * map->x_dim / 2;
-	offset.y = WIN_H / 2 - map->space * map->y_dim / 2;
-	offset.z = 0;
+	t_pt	neighbour_right;
+	t_pt	neighbour_down;
 
 	i = 0;
 	while (i < map->x_dim * map->y_dim)
@@ -145,7 +218,20 @@ void	draw_grid(t_img *img, t_map *map)
 		pt.x = (map->pt_arr + i)->x + offset.x;
 		pt.y = (map->pt_arr + i)->y + offset.y;
 		pt.z = (map->pt_arr + i)->z + offset.z;
-		img_pix_put(img, pt.x, pt.y, WHITE);
+		if (i % map->x_dim != map->x_dim - 1)
+		{
+			neighbour_right.x = (map->pt_arr + i + 1)->x + offset.x;
+			neighbour_right.y = (map->pt_arr + i + 1)->y + offset.y;
+			neighbour_right.z = (map->pt_arr + i + 1)->z + offset.z;
+			draw_line(img, pt, neighbour_right, WHITE);
+		}
+		if (i / map->y_dim != map->y_dim - 1)
+		{
+			neighbour_down.x = (map->pt_arr + i + map->x_dim)->x + offset.x;
+			neighbour_down.y = (map->pt_arr + i + map->x_dim)->y + offset.y;
+			neighbour_down.z = (map->pt_arr + i + map->x_dim)->z + offset.z;
+			draw_line(img, pt, neighbour_down, WHITE);
+		}
 		i++;
 	}
 }
@@ -171,6 +257,8 @@ void	render_background(t_img *img, int color)
 int	loop_hook(t_data *data)
 {
 	t_map	*map;
+	t_pt	offset;
+
 	if (data->win_ptr == NULL)
 		return (1);
 	//render_background(&data->img, BLACK);
@@ -181,7 +269,12 @@ int	loop_hook(t_data *data)
 	//draw_rect(&data->img,
 	//		(t_rect){WIN_W / 10 * 9, WIN_H / 4, WIN_W / 10, WIN_H / 2, WHITE});
 	map = data->map;
-	draw_grid(&data->img, map);
+	offset.x = 0;
+	offset.y = 0;
+	offset.x = WIN_W / 2 - map->space * map->x_dim / 2;
+	offset.y = WIN_H / 2 - map->space * map->y_dim / 2;
+	offset.z = 0;
+	draw_map(&data->img, map, offset);
 	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img.mlx_img, 0, 0);
 	return (0);
 }
@@ -203,9 +296,7 @@ int	main(int argc, char **argv)
 	t_data	data;
 	// READ FILE
 	// PARSE FILE TO ARR
-	// TESTARR
-	// TRANSFORM MAP
-	// DRAW MAP
+	// DRAW LINES
 	t_matrix3x3 rot_x_90;
 	t_matrix3x3 rot_z_45;
 	t_matrix3x3 rot_x_iso;
