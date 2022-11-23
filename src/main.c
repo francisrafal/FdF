@@ -86,7 +86,7 @@ t_map	*generate_map(void)
 	map->pt_arr = malloc(map->x_dim * map->y_dim * sizeof(t_pt));
 	if (map->pt_arr == NULL)
 		return (NULL);
-	map->space = 30;
+	map->space = 10;
 	pt.z = 0;
 	pt.y = 0;
 	i = 0;
@@ -291,12 +291,43 @@ int	key_hook(int keysym, t_data *data)
 
 int	main(int argc, char **argv)
 {
-	(void)argc;
-	(void)argv;
 	t_data	data;
-	// READ FILE
+	int		fd;
+	char	*line;
+
+	if (argc != 2)
+	{
+		ft_putstr_fd("Usage: ./fdf MAPFILE\n", 2);
+		return (-1);
+	}
+	fd = open(argv[1], O_RDONLY);
+	if (fd == -1)
+	{
+		ft_putstr_fd("Failed to open file\n", 2);
+		return (-1);
+	}
+	line = "";
+	// COUNT LINES
+	// COUNT NUMBERS
+	// split line into char **arr
+	// add all lines to char ***arr | NULL TERMINATED
+	// generate_map with z = atoi
+	while (line != NULL)
+	{
+		line = get_next_line(fd);
+		if (line != NULL)
+		{
+			ft_printf("%s", line);
+			free(line);
+			line = "";
+		}
+	}
+	if (close(fd) == - 1)
+	{
+		ft_putstr_fd("Failed to close file\n", 2);
+		return (-1);
+	}
 	// PARSE FILE TO ARR
-	// DRAW LINES
 	t_matrix3x3 rot_x_90;
 	t_matrix3x3 rot_z_45;
 	t_matrix3x3 rot_x_iso;

@@ -17,6 +17,9 @@
 # include <stdlib.h>
 # include <math.h>
 # include <X11/keysym.h>
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <fcntl.h>
 
 # define WIN_W	1280
 # define WIN_H	720

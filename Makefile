@@ -89,4 +89,4 @@ fclean:		clean
 re:			fclean all
 
 test:		all
-			./fdf
+			./fdf test_maps/42.fdf
