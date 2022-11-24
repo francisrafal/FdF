@@ -285,7 +285,7 @@ void	replace_newline(unsigned int i, char *s)
 		*s = ' ';
 }
 
-void	print_parsed_file(char **parsed_file)
+int	print_parsed_file(char **parsed_file)
 {
 	int	i;
 
@@ -295,6 +295,7 @@ void	print_parsed_file(char **parsed_file)
 		ft_printf("%s\n", *parsed_file);
 		i++;
 	}
+	return (i);
 }
 
 void	free_str_arr(char **str_arr)
@@ -316,9 +317,13 @@ int		count_cols(char *s)
 	char **split;
 
 	cols = 0;
+	ft_striteri(s, replace_newline);
 	split = ft_split(s, ' ');
 	while (split[cols] != NULL)
+	{
+		ft_printf("%s\n", split[cols]);
 		cols++;
+	}
 	free_str_arr(split);
 	return (cols);
 }
@@ -364,10 +369,10 @@ int	main(int argc, char **argv)
 			line = "";
 		}
 	}
-	ft_printf("%s", file);
 	ft_striteri(file, replace_newline);
-	ft_printf("x_dim: %d, y_dim: %d\n", data.map->x_dim, data.map->y_dim);
 	data.parsed_file = ft_split(file, ' ');
+	ft_printf("parsed_file length: %d\n", print_parsed_file(data.parsed_file));
+	ft_printf("x_dim: %d, y_dim: %d\n", data.map->x_dim, data.map->y_dim);
 	free(file);
 	if (close(fd) == -1)
 	{
