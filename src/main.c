@@ -12,62 +12,21 @@
 
 #include "fdf.h"
 
-void	img_pix_put(t_img *img, int x, int y, int color)
+void	img_pix_put(t_img *img, t_pt pt, int color)
 {
 	char	*pixel;
+	int		x;
+	int		y;
+	int		z;
+
+	x = round(pt.x);
+	y = round(pt.y);
+	z = round(pt.z);
 
 	if (x < 0 || x >= WIN_W || y < 0 || y >= WIN_H)
 		return ;
 	pixel = img->addr + y * img->line_len + x * (img->bpp / 8);
-	*(int *)pixel = color;
-}
-
-void	draw_circle(t_img *img, int color)
-{
-	double_t	phi;
-	int			x;
-	int			y;
-
-	phi = 0;
-	while (phi < 2 * M_PI)
-	{
-		x = round(WIN_W / 10 * cos(phi) + WIN_W / 2);
-		y = round(WIN_W / 10 * sin(phi) + WIN_H / 2);
-		img_pix_put(img, x, y, color);
-		phi += 0.001;
-	}
-}
-
-void	draw_vline(t_img *img, int x, int color)
-{
-	int	i;
-
-	i = 0;
-	while (i < WIN_H)
-	{
-		img_pix_put(img, x, i, color);
-		i++;
-	}
-}
-
-void	draw_rect(t_img *img, t_rect rect)
-{
-	int	i;
-	int	j;
-
-	i = rect.y;
-	while (i < rect.y + rect.height)
-	{
-		j = rect.x;
-		while (j < rect.x + rect.width)
-		{
-			if (i == rect.y || i == rect.y + rect.height - 1
-				|| j == rect.x || j == rect.x + rect.width - 1)
-				img_pix_put(img, j, i, rect.color);
-			j++;
-		}
-		i++;
-	}
+	*(int *)pixel = color + z;
 }
 
 t_map	*generate_map(t_data *data)
@@ -142,7 +101,7 @@ int	draw_line_low(t_img *img, t_pt start, t_pt end, int color)
 	err = 2 * dy - dx;
 	while (start.x < end.x)
 	{
-		img_pix_put(img, start.x, start.y, color);
+		img_pix_put(img, start, color);
 		if (err > 0)
 			{
 				start.y += yi;
@@ -173,7 +132,7 @@ int	draw_line_high(t_img *img, t_pt start, t_pt end, int color)
 	err = 2 * dx - dy;
 	while (start.y < end.y)
 	{
-		img_pix_put(img, start.x, start.y, color);
+		img_pix_put(img, start, color);
 		if (err > 0)
 			{
 				start.x += xi;
@@ -242,7 +201,7 @@ void	render_background(t_img *img, int color)
 		j = 0;
 		while (j < WIN_W)
 		{
-			img_pix_put(img, j, i, color);
+			img_pix_put(img, (t_pt){j, i, 0}, color);
 			j++;
 		}
 		i++;
@@ -387,17 +346,20 @@ int	main(int argc, char **argv)
 	t_matrix3x3 rot_x_90;
 	t_matrix3x3 rot_z_45;
 	t_matrix3x3 rot_x_iso;
-	t_matrix3x3 scale10;
+	t_matrix3x3 scale_10;
+	t_matrix3x3 scale_z_1_2;
 	
 	rot_x_90 = (t_matrix3x3){1, 0, 0, 0, 0, 1, 0, -1, 0};
 	rot_z_45 = (t_matrix3x3){cos(M_PI_4), 0, sin(M_PI_4), 0, 1, 0, -sin(M_PI_4), 0, cos(M_PI_4)};
 	rot_x_iso = (t_matrix3x3){1, 0, 0, 0, cos(ISO), -sin(ISO), 0, sin(ISO), cos(ISO)};
-	scale10 = (t_matrix3x3){10, 0, 0, 0, 10, 0, 0, 0, 10};
+	scale_10 = (t_matrix3x3){10, 0, 0, 0, 10, 0, 0, 0, 10};
+	scale_z_1_2 = (t_matrix3x3){1, 0, 0, 0, 1, 0, 0, 0, 0.5};
 	data.map = generate_map(&data);
+	data.map = transform_map(data.map, scale_z_1_2);
 	data.map = transform_map(data.map, rot_x_90);
 	data.map = transform_map(data.map, rot_z_45);
 	data.map = transform_map(data.map, rot_x_iso);
-	data.map = transform_map(data.map, scale10);
+	data.map = transform_map(data.map, scale_10);
 	data.mlx_ptr = mlx_init();
 	if (data.mlx_ptr == NULL)
 	{
