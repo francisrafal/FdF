@@ -292,7 +292,7 @@ int	print_parsed_file(char **parsed_file)
 	i = 0;
 	while (parsed_file[i] != NULL)
 	{
-		ft_printf("%s\n", *parsed_file);
+		ft_printf("%s\n", parsed_file[i]);
 		i++;
 	}
 	return (i);
@@ -335,6 +335,7 @@ int	main(int argc, char **argv)
 	char	*line;
 	char	*file;
 	char	*tmp;
+	int		cols;
 
 	if (argc != 2)
 	{
@@ -359,8 +360,13 @@ int	main(int argc, char **argv)
 		line = get_next_line(fd);
 		if (line != NULL)
 		{
-			if (data.map->y_dim == 0)
-				data.map->x_dim = count_cols(line);
+			cols = count_cols(line);
+			if (data.map->y_dim != 0 && data.map->x_dim != cols)
+			{
+				ft_putstr_fd("Found wrong line length. Exiting.\n", 2);
+				return (-1);
+			}
+			data.map->x_dim = cols;
 			data.map->y_dim += 1;
 			tmp = file;
 			file = ft_strjoin(tmp, line);
@@ -369,7 +375,9 @@ int	main(int argc, char **argv)
 			line = "";
 		}
 	}
+	ft_printf(file);
 	ft_striteri(file, replace_newline);
+	ft_printf(file);
 	data.parsed_file = ft_split(file, ' ');
 	ft_printf("parsed_file length: %d\n", print_parsed_file(data.parsed_file));
 	ft_printf("x_dim: %d, y_dim: %d\n", data.map->x_dim, data.map->y_dim);
@@ -413,7 +421,5 @@ int	main(int argc, char **argv)
 	free(data.map);
 	free(data.mlx_ptr);
 	free_str_arr(data.parsed_file);
-
-	while (data.parsed_file)
 	return (0);
 }

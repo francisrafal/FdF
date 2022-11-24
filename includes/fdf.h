@@ -21,8 +21,8 @@
 # include <sys/stat.h>
 # include <fcntl.h>
 
-# define WIN_W	1280
-# define WIN_H	720
+# define WIN_W	1920
+# define WIN_H	1080
 # define RED	0x00FF0000
 # define GREEN	0x0000FF00
 # define BLUE	0x000000FF
