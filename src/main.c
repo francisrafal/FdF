@@ -88,10 +88,10 @@ int	draw_line_low(t_img *img, t_pt start, t_pt end)
 {
 	int dx;
 	int dy;
-	int	dcolor;
+	float_t	dcolor;
 	int err;
 	int yi;
-	int	ci;
+	float_t	ci;
 
 	dx = end.x - start.x;
 	dy = end.y - start.y;
@@ -105,8 +105,6 @@ int	draw_line_low(t_img *img, t_pt start, t_pt end)
 	ci = 0;
 	if (dx != 0)
 		ci = dcolor / abs(dx);
-	//if (dcolor < 0)
-		//	ci = -ci;
 	err = 2 * dy - dx;
 	while (start.x < end.x)
 	{
@@ -118,7 +116,13 @@ int	draw_line_low(t_img *img, t_pt start, t_pt end)
 			}
 		else
 			err = err + 2 * dy;
-		start.color += ci;
+		// CHANGE EVERYTHING ABOUT COLORS HERE:
+		ci += ci;
+		if (fabsf(ci) > 1)
+		{
+			start.color += ci;
+			ci = ci - floor(fabsf(ci));
+		}
 		start.x++;
 	}
 	return (0);
@@ -128,10 +132,10 @@ int	draw_line_high(t_img *img, t_pt start, t_pt end)
 {
 	int dx;
 	int dy;
-	int	dcolor;
+	float_t	dcolor;
 	int err;
 	int xi;
-	int ci;
+	float_t ci;
 
 	dx = end.x - start.x;
 	dy = end.y - start.y;
@@ -144,9 +148,12 @@ int	draw_line_high(t_img *img, t_pt start, t_pt end)
 		}
 	ci = 0;
 	if (dy != 0)
-		ci = dcolor / abs(dy);
-	//if (dcolor < 0)
-		//	ci = -ci;
+	{
+		if (dcolor < 0)
+			ci = floor(dcolor / abs(dy));
+		else
+			ci = ceil(dcolor / abs(dy));
+	}
 	err = 2 * dx - dy;
 	while (start.y < end.y)
 	{
@@ -154,11 +161,12 @@ int	draw_line_high(t_img *img, t_pt start, t_pt end)
 		if (err > 0)
 			{
 				start.x += xi;
+		// CHANGE EVERYTHING ABOUT COLORS HERE:
+				start.color += ci;
 				err = err + (2 * (dx - dy));
 			}
 		else
 			err = err + 2 * dx;
-		start.color += ci;
 		start.y++;
 	}
 	return (0);
@@ -379,12 +387,12 @@ int	main(int argc, char **argv)
 	scale_30 = (t_matrix3x3){30, 0, 0, 0, 30, 0, 0, 0, 30};
 	scale_z_1_2 = (t_matrix3x3){1, 0, 0, 0, 1, 0, 0, 0, 0.1};
 	data.map = generate_map(&data);
-	//data.map = transform_map(data.map, scale_z_1_2);
-	//data.map = transform_map(data.map, rot_x_90);
-	//data.map = transform_map(data.map, rot_z_45);
-	//data.map = transform_map(data.map, rot_x_iso);
-	//data.map = transform_map(data.map, scale_10);
-	data.map = transform_map(data.map, scale_30);
+	data.map = transform_map(data.map, scale_z_1_2);
+	data.map = transform_map(data.map, rot_x_90);
+	data.map = transform_map(data.map, rot_z_45);
+	data.map = transform_map(data.map, rot_x_iso);
+	data.map = transform_map(data.map, scale_10);
+	//data.map = transform_map(data.map, scale_30);
 	data.mlx_ptr = mlx_init();
 	if (data.mlx_ptr == NULL)
 	{
