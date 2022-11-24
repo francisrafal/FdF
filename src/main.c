@@ -82,7 +82,7 @@ t_map	*generate_map(t_data *data)
 	map->pt_arr = malloc(map->x_dim * map->y_dim * sizeof(t_pt));
 	if (map->pt_arr == NULL)
 		return (NULL);
-	map->space = 10;
+	map->space = 1;
 	pt.z = 0;
 	pt.y = -map->space * map->y_dim / 2;
 	i = 0;
@@ -320,10 +320,7 @@ int		count_cols(char *s)
 	ft_striteri(s, replace_newline);
 	split = ft_split(s, ' ');
 	while (split[cols] != NULL)
-	{
-		ft_printf("%s\n", split[cols]);
 		cols++;
-	}
 	free_str_arr(split);
 	return (cols);
 }
@@ -375,12 +372,12 @@ int	main(int argc, char **argv)
 			line = "";
 		}
 	}
-	ft_printf(file);
+	//ft_printf(file);
 	ft_striteri(file, replace_newline);
-	ft_printf(file);
+	//ft_printf(file);
 	data.parsed_file = ft_split(file, ' ');
-	ft_printf("parsed_file length: %d\n", print_parsed_file(data.parsed_file));
-	ft_printf("x_dim: %d, y_dim: %d\n", data.map->x_dim, data.map->y_dim);
+	//ft_printf("parsed_file length: %d\n", print_parsed_file(data.parsed_file));
+	//ft_printf("x_dim: %d, y_dim: %d\n", data.map->x_dim, data.map->y_dim);
 	free(file);
 	if (close(fd) == -1)
 	{
@@ -390,14 +387,17 @@ int	main(int argc, char **argv)
 	t_matrix3x3 rot_x_90;
 	t_matrix3x3 rot_z_45;
 	t_matrix3x3 rot_x_iso;
+	t_matrix3x3 scale10;
 	
 	rot_x_90 = (t_matrix3x3){1, 0, 0, 0, 0, 1, 0, -1, 0};
 	rot_z_45 = (t_matrix3x3){cos(M_PI_4), 0, sin(M_PI_4), 0, 1, 0, -sin(M_PI_4), 0, cos(M_PI_4)};
 	rot_x_iso = (t_matrix3x3){1, 0, 0, 0, cos(ISO), -sin(ISO), 0, sin(ISO), cos(ISO)};
+	scale10 = (t_matrix3x3){10, 0, 0, 0, 10, 0, 0, 0, 10};
 	data.map = generate_map(&data);
 	data.map = transform_map(data.map, rot_x_90);
 	data.map = transform_map(data.map, rot_z_45);
 	data.map = transform_map(data.map, rot_x_iso);
+	data.map = transform_map(data.map, scale10);
 	data.mlx_ptr = mlx_init();
 	if (data.mlx_ptr == NULL)
 	{
