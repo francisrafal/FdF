@@ -24,6 +24,7 @@
 # define WIN_W	1920
 # define WIN_H	1080
 # define RED	0x00FF0000
+# define DRED	0x00660000
 # define GREEN	0x0000FF00
 # define BLUE	0x000000FF
 # define WHITE	0x00FFFFFF
@@ -38,6 +39,7 @@ typedef struct s_pt
 	float_t		x;
 	float_t		y;
 	float_t		z;
+	int			color;
 }			t_pt;
 
 typedef struct s_map
@@ -46,6 +48,8 @@ typedef struct s_map
 	int		x_dim;
 	int		y_dim;	
 	int		space;
+	float_t	min_height;
+	float_t	max_height;
 }			t_map;
 
 typedef struct s_matrix3x3

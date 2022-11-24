@@ -12,7 +12,7 @@
 
 #include "fdf.h"
 
-void	img_pix_put(t_img *img, t_pt pt, int color)
+void	img_pix_put(t_img *img, t_pt pt)
 {
 	char	*pixel;
 	int		x;
@@ -26,7 +26,7 @@ void	img_pix_put(t_img *img, t_pt pt, int color)
 	if (x < 0 || x >= WIN_W || y < 0 || y >= WIN_H)
 		return ;
 	pixel = img->addr + y * img->line_len + x * (img->bpp / 8);
-	*(int *)pixel = color + z;
+	*(int *)pixel = pt.color;
 }
 
 t_map	*generate_map(t_data *data)
@@ -54,6 +54,7 @@ t_map	*generate_map(t_data *data)
 			cur = map->pt_arr + i * map->x_dim + j;
 			*cur = pt;
 			cur->z = ft_atoi(data->parsed_file[i * map->x_dim + j]);
+			cur->color = DRED + cur->z * 10;
 			pt.x += map->space;
 			j++;
 		}
@@ -83,25 +84,33 @@ t_map	*transform_map(t_map *map, t_matrix3x3 mat)
 	return (map);
 }
 
-int	draw_line_low(t_img *img, t_pt start, t_pt end, int color)
+int	draw_line_low(t_img *img, t_pt start, t_pt end)
 {
 	int dx;
 	int dy;
+	int	dcolor;
 	int err;
 	int yi;
+	int	ci;
 
 	dx = end.x - start.x;
 	dy = end.y - start.y;
+	dcolor = end.color - start.color;
 	yi = 1;
 	if (dy < 0)
 		{
 			yi = -1;
 			dy = -dy;
 		}
+	ci = 0;
+	if (dx != 0)
+		ci = dcolor / abs(dx);
+	//if (dcolor < 0)
+		//	ci = -ci;
 	err = 2 * dy - dx;
 	while (start.x < end.x)
 	{
-		img_pix_put(img, start, color);
+		img_pix_put(img, start);
 		if (err > 0)
 			{
 				start.y += yi;
@@ -109,30 +118,39 @@ int	draw_line_low(t_img *img, t_pt start, t_pt end, int color)
 			}
 		else
 			err = err + 2 * dy;
+		start.color += ci;
 		start.x++;
 	}
 	return (0);
 }
 
-int	draw_line_high(t_img *img, t_pt start, t_pt end, int color)
+int	draw_line_high(t_img *img, t_pt start, t_pt end)
 {
 	int dx;
 	int dy;
+	int	dcolor;
 	int err;
 	int xi;
+	int ci;
 
 	dx = end.x - start.x;
 	dy = end.y - start.y;
+	dcolor = end.color - start.color;
 	xi = 1;
 	if (dx < 0)
 		{
 			xi = -1;
 			dx = -dx;
 		}
+	ci = 0;
+	if (dy != 0)
+		ci = dcolor / abs(dy);
+	//if (dcolor < 0)
+		//	ci = -ci;
 	err = 2 * dx - dy;
 	while (start.y < end.y)
 	{
-		img_pix_put(img, start, color);
+		img_pix_put(img, start);
 		if (err > 0)
 			{
 				start.x += xi;
@@ -140,22 +158,23 @@ int	draw_line_high(t_img *img, t_pt start, t_pt end, int color)
 			}
 		else
 			err = err + 2 * dx;
+		start.color += ci;
 		start.y++;
 	}
 	return (0);
 }
 
-int	draw_line(t_img *img, t_pt start, t_pt end, int color)
+int	draw_line(t_img *img, t_pt start, t_pt end)
 {
 	if (fabsf(end.y - start.y) < fabsf(end.x - start.x))
 	{
 		if (start.x > end.x)
-			return(draw_line_low(img, end, start, color));
-		return(draw_line_low(img, start, end, color));
+			return(draw_line_low(img, end, start));
+		return(draw_line_low(img, start, end));
 	}
 	if (start.y > end.y)
-		return(draw_line_high(img, end, start, color));
-	return(draw_line_high(img, start, end, color));
+		return(draw_line_high(img, end, start));
+	return(draw_line_high(img, start, end));
 	return (-1);
 }
 
@@ -172,19 +191,22 @@ void	draw_map(t_img *img, t_map *map, t_pt offset)
 		pt.x = (map->pt_arr + i)->x + offset.x;
 		pt.y = (map->pt_arr + i)->y + offset.y;
 		pt.z = (map->pt_arr + i)->z + offset.z;
+		pt.color = (map->pt_arr + i)->color;
 		if (i % map->x_dim != map->x_dim - 1)
 		{
 			neighbour_right.x = (map->pt_arr + i + 1)->x + offset.x;
 			neighbour_right.y = (map->pt_arr + i + 1)->y + offset.y;
 			neighbour_right.z = (map->pt_arr + i + 1)->z + offset.z;
-			draw_line(img, pt, neighbour_right, WHITE);
+			neighbour_right.color = (map->pt_arr + i + 1)->color;
+			draw_line(img, pt, neighbour_right);
 		}
 		if (i < map->x_dim * map->y_dim - map->x_dim)
 		{
 			neighbour_down.x = (map->pt_arr + i + map->x_dim)->x + offset.x;
 			neighbour_down.y = (map->pt_arr + i + map->x_dim)->y + offset.y;
 			neighbour_down.z = (map->pt_arr + i + map->x_dim)->z + offset.z;
-			draw_line(img, pt, neighbour_down, WHITE);
+			neighbour_down.color = (map->pt_arr + i + map->x_dim)->color;
+			draw_line(img, pt, neighbour_down);
 		}
 		i++;
 	}
@@ -201,7 +223,7 @@ void	render_background(t_img *img, int color)
 		j = 0;
 		while (j < WIN_W)
 		{
-			img_pix_put(img, (t_pt){j, i, 0}, color);
+			img_pix_put(img, (t_pt){j, i, 0, color});
 			j++;
 		}
 		i++;
@@ -215,7 +237,7 @@ int	loop_hook(t_data *data)
 
 	if (data->win_ptr == NULL)
 		return (1);
-	render_background(&data->img, DGREY);
+	//render_background(&data->img, DGREY);
 	map = data->map;
 	offset.x = 0;
 	offset.y = 0;
@@ -347,19 +369,22 @@ int	main(int argc, char **argv)
 	t_matrix3x3 rot_z_45;
 	t_matrix3x3 rot_x_iso;
 	t_matrix3x3 scale_10;
+	t_matrix3x3 scale_30;
 	t_matrix3x3 scale_z_1_2;
 	
 	rot_x_90 = (t_matrix3x3){1, 0, 0, 0, 0, 1, 0, -1, 0};
 	rot_z_45 = (t_matrix3x3){cos(M_PI_4), 0, sin(M_PI_4), 0, 1, 0, -sin(M_PI_4), 0, cos(M_PI_4)};
 	rot_x_iso = (t_matrix3x3){1, 0, 0, 0, cos(ISO), -sin(ISO), 0, sin(ISO), cos(ISO)};
 	scale_10 = (t_matrix3x3){10, 0, 0, 0, 10, 0, 0, 0, 10};
-	scale_z_1_2 = (t_matrix3x3){1, 0, 0, 0, 1, 0, 0, 0, 0.5};
+	scale_30 = (t_matrix3x3){30, 0, 0, 0, 30, 0, 0, 0, 30};
+	scale_z_1_2 = (t_matrix3x3){1, 0, 0, 0, 1, 0, 0, 0, 0.1};
 	data.map = generate_map(&data);
-	data.map = transform_map(data.map, scale_z_1_2);
-	data.map = transform_map(data.map, rot_x_90);
-	data.map = transform_map(data.map, rot_z_45);
-	data.map = transform_map(data.map, rot_x_iso);
-	data.map = transform_map(data.map, scale_10);
+	//data.map = transform_map(data.map, scale_z_1_2);
+	//data.map = transform_map(data.map, rot_x_90);
+	//data.map = transform_map(data.map, rot_z_45);
+	//data.map = transform_map(data.map, rot_x_iso);
+	//data.map = transform_map(data.map, scale_10);
+	data.map = transform_map(data.map, scale_30);
 	data.mlx_ptr = mlx_init();
 	if (data.mlx_ptr == NULL)
 	{
