@@ -16,7 +16,7 @@ void	img_pix_put(t_img *img, int x, int y, int color)
 {
 	char	*pixel;
 
-	if (x < 0 || y < 0)
+	if (x < 0 || x >= WIN_W || y < 0 || y >= WIN_H)
 		return ;
 	pixel = img->addr + y * img->line_len + x * (img->bpp / 8);
 	*(int *)pixel = color;
@@ -70,36 +70,31 @@ void	draw_rect(t_img *img, t_rect rect)
 	}
 }
 
-t_map	*generate_map(void)
+t_map	*generate_map(t_data *data)
 {
-	t_map	*map;
 	t_pt	*cur;
+	t_map	*map;
 	t_pt	pt;
 	int		i;
 	int		j;
 
-	map = malloc(sizeof(t_map));
-	if (map == NULL)
-		return (NULL);
-	map->x_dim = 50;
-	map->y_dim = 50;
+	map = data->map;
 	map->pt_arr = malloc(map->x_dim * map->y_dim * sizeof(t_pt));
 	if (map->pt_arr == NULL)
 		return (NULL);
 	map->space = 10;
 	pt.z = 0;
-	pt.y = 0;
+	pt.y = -map->space * map->y_dim / 2;
 	i = 0;
 	while (i < map->y_dim)
 	{
-		pt.x = 0;
+		pt.x = -map->space * map->x_dim / 2;
 		j = 0;
 		while (j < map->x_dim)
 		{	
 			cur = map->pt_arr + i * map->x_dim + j;
 			*cur = pt;
-			if (j == map->x_dim / 2 || j == 0 || j == map->x_dim - 1)
-				cur->z = 10;
+			cur->z = ft_atoi(data->parsed_file[i * map->x_dim + j]);
 			pt.x += map->space;
 			j++;
 		}
@@ -225,7 +220,7 @@ void	draw_map(t_img *img, t_map *map, t_pt offset)
 			neighbour_right.z = (map->pt_arr + i + 1)->z + offset.z;
 			draw_line(img, pt, neighbour_right, WHITE);
 		}
-		if (i / map->y_dim != map->y_dim - 1)
+		if (i < map->x_dim * map->y_dim - map->x_dim)
 		{
 			neighbour_down.x = (map->pt_arr + i + map->x_dim)->x + offset.x;
 			neighbour_down.y = (map->pt_arr + i + map->x_dim)->y + offset.y;
@@ -261,18 +256,12 @@ int	loop_hook(t_data *data)
 
 	if (data->win_ptr == NULL)
 		return (1);
-	//render_background(&data->img, BLACK);
-	//draw_vline(&data->img, WIN_W / 2, WHITE);
-	//draw_circle(&data->img, WHITE);
-	//draw_rect(&data->img,
-	//		(t_rect){0, WIN_H / 4, WIN_W / 10, WIN_H / 2, WHITE});
-	//draw_rect(&data->img,
-	//		(t_rect){WIN_W / 10 * 9, WIN_H / 4, WIN_W / 10, WIN_H / 2, WHITE});
+	render_background(&data->img, DGREY);
 	map = data->map;
 	offset.x = 0;
 	offset.y = 0;
-	offset.x = WIN_W / 2 - map->space * map->x_dim / 2;
-	offset.y = WIN_H / 2 - map->space * map->y_dim / 2;
+	offset.x = WIN_W / 2;
+	offset.y = WIN_H / 2;
 	offset.z = 0;
 	draw_map(&data->img, map, offset);
 	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img.mlx_img, 0, 0);
@@ -289,11 +278,58 @@ int	key_hook(int keysym, t_data *data)
 	return (0);
 }
 
+void	replace_newline(unsigned int i, char *s)
+{
+	(void)i;
+	if (*s == '\n')
+		*s = ' ';
+}
+
+void	print_parsed_file(char **parsed_file)
+{
+	int	i;
+
+	i = 0;
+	while (parsed_file[i] != NULL)
+	{
+		ft_printf("%s\n", *parsed_file);
+		i++;
+	}
+}
+
+void	free_str_arr(char **str_arr)
+{
+	int	i;
+
+	i = 0;
+	while (str_arr[i] != NULL)
+	{
+		free(str_arr[i]);
+		i++;
+	}
+	free(str_arr);
+}
+
+int		count_cols(char *s)
+{
+	int	cols;
+	char **split;
+
+	cols = 0;
+	split = ft_split(s, ' ');
+	while (split[cols] != NULL)
+		cols++;
+	free_str_arr(split);
+	return (cols);
+}
+
 int	main(int argc, char **argv)
 {
 	t_data	data;
 	int		fd;
 	char	*line;
+	char	*file;
+	char	*tmp;
 
 	if (argc != 2)
 	{
@@ -306,28 +342,38 @@ int	main(int argc, char **argv)
 		ft_putstr_fd("Failed to open file\n", 2);
 		return (-1);
 	}
+	data.map = malloc(sizeof(t_map));
+	if (data.map == NULL)
+		return (-1);
 	line = "";
-	// COUNT LINES
-	// COUNT NUMBERS
-	// split line into char **arr
-	// add all lines to char ***arr | NULL TERMINATED
-	// generate_map with z = atoi
+	file = malloc(sizeof(char));
+	file[0] = '\0';
+	data.map->y_dim = 0;
 	while (line != NULL)
 	{
 		line = get_next_line(fd);
 		if (line != NULL)
 		{
-			ft_printf("%s", line);
+			if (data.map->y_dim == 0)
+				data.map->x_dim = count_cols(line);
+			data.map->y_dim += 1;
+			tmp = file;
+			file = ft_strjoin(tmp, line);
+			free(tmp);
 			free(line);
 			line = "";
 		}
 	}
-	if (close(fd) == - 1)
+	ft_printf("%s", file);
+	ft_striteri(file, replace_newline);
+	ft_printf("x_dim: %d, y_dim: %d\n", data.map->x_dim, data.map->y_dim);
+	data.parsed_file = ft_split(file, ' ');
+	free(file);
+	if (close(fd) == -1)
 	{
 		ft_putstr_fd("Failed to close file\n", 2);
 		return (-1);
 	}
-	// PARSE FILE TO ARR
 	t_matrix3x3 rot_x_90;
 	t_matrix3x3 rot_z_45;
 	t_matrix3x3 rot_x_iso;
@@ -335,7 +381,7 @@ int	main(int argc, char **argv)
 	rot_x_90 = (t_matrix3x3){1, 0, 0, 0, 0, 1, 0, -1, 0};
 	rot_z_45 = (t_matrix3x3){cos(M_PI_4), 0, sin(M_PI_4), 0, 1, 0, -sin(M_PI_4), 0, cos(M_PI_4)};
 	rot_x_iso = (t_matrix3x3){1, 0, 0, 0, cos(ISO), -sin(ISO), 0, sin(ISO), cos(ISO)};
-	data.map = generate_map();
+	data.map = generate_map(&data);
 	data.map = transform_map(data.map, rot_x_90);
 	data.map = transform_map(data.map, rot_z_45);
 	data.map = transform_map(data.map, rot_x_iso);
@@ -361,5 +407,8 @@ int	main(int argc, char **argv)
 	free(data.map->pt_arr);
 	free(data.map);
 	free(data.mlx_ptr);
+	free_str_arr(data.parsed_file);
+
+	while (data.parsed_file)
 	return (0);
 }

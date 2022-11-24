@@ -29,6 +29,8 @@
 # define WHITE	0x00FFFFFF
 # define DGREEN	0x00006600
 # define BLACK	0x00000000
+# define GREY	0x00888888
+# define DGREY	0x00333333
 # define ISO	0.6154
 
 typedef struct s_pt
@@ -74,6 +76,7 @@ typedef struct s_data
 	void	*win_ptr;
 	t_img	img;
 	t_map	*map;
+	char	**parsed_file;
 }			t_data;
 
 typedef struct s_rect
