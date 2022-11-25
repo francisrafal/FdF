@@ -88,13 +88,24 @@ typedef struct s_data
 	char	**parsed_file;
 }			t_data;
 
-typedef struct s_rect
-{
-	int		x;
-	int		y;
-	int		width;
-	int		height;
-	int		color;
-}			t_rect;
+void	img_pix_put(t_img *img, t_pt pt);
+float_t	get_percentage(int start, int end, int cur);
+int		calc_color_channel(int start, int end, float_t percentage);
+int		get_color(t_pt cur, t_pt start, t_pt end, t_pt delta);
+int		get_height_gradient_color(t_pt cur, t_pt start, t_pt end);
+t_map	*generate_map(t_data *data);
+t_map	*transform_map(t_map *map, t_matrix3x3 mat);
+int		draw_line_low(t_img *img, t_pt start, t_pt end);
+int		draw_line_high(t_img *img, t_pt start, t_pt end);
+int		draw_line(t_img *img, t_pt start, t_pt end);
+void	draw_map(t_img *img, t_map *map, t_pt offset);
+void	render_background(t_img *img, int color);
+int		loop_hook(t_data *data);
+int		key_hook(int keysym, t_data *data);
+int		close_app(t_data *data);
+void	replace_newline(unsigned int i, char *s);
+int		print_parsed_file(char **parsed_file);
+void	free_str_arr(char **str_arr);
+int		count_cols(char *s);
 
 #endif

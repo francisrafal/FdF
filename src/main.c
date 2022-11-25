@@ -27,59 +27,6 @@ void	img_pix_put(t_img *img, t_pt pt)
 	*(int *)pixel = pt.color;
 }
 
-float_t	get_percentage(int start, int end, int cur)
-{
-	float_t	position;
-	float_t	delta;
-
-	delta = end - start;
-	if (delta == 0)
-		return (1.0);
-	position = cur - start;
-	return (position / delta);
-}
-
-int	calc_color_channel(int start, int end, float_t percentage)
-{
-	int	color_channel;
-
-	color_channel = (1 - percentage) * start + percentage * end;
-	return (color_channel);	
-}
-
-int	get_color(t_pt cur, t_pt start, t_pt end, t_pt delta)
-{
-	int	red;
-	int	green;
-	int	blue;
-	float_t	percentage;
-
-	if (cur.color == end.color)
-		return (cur.color);
-	if (delta.x > delta.y)
-		percentage = get_percentage(start.x, end.x, cur.x);
-	else
-		percentage = get_percentage(start.y, end.y, cur.y);
-	red = calc_color_channel((start.color >> 16) & 0xFF, (end.color >> 16) & 0xFF, percentage);
-	green = calc_color_channel((start.color >> 8) & 0xFF, (end.color >> 8) & 0xFF, percentage);
-	blue = calc_color_channel(start.color & 0xFF, end.color & 0xFF, percentage);
-	return ((red << 16) | (green << 8) | blue);
-}
-
-int	get_height_gradient_color(t_pt cur, t_pt start, t_pt end)
-{
-	int	red;
-	int	green;
-	int	blue;
-	float_t	percentage;
-
-	percentage = get_percentage(fabsf(start.z), fabsf(end.z), fabsf(cur.z));
-	red = calc_color_channel((start.color >> 16) & 0xFF, (end.color >> 16) & 0xFF, percentage);
-	green = calc_color_channel((start.color >> 8) & 0xFF, (end.color >> 8) & 0xFF, percentage);
-	blue = calc_color_channel(start.color & 0xFF, end.color & 0xFF, percentage);
-	return ((red << 16) | (green << 8) | blue);
-}
-
 t_map	*generate_map(t_data *data)
 {
 	t_pt	*cur;
@@ -134,7 +81,6 @@ t_map	*generate_map(t_data *data)
 			cur->color = get_height_gradient_color(*cur, ground, min);
 		i++;
 	}
-	//ft_printf("min_height: %d\nmax_height: %d\n", map->min_height, map->max_height);
 	return (map);
 }
 
@@ -156,86 +102,6 @@ t_map	*transform_map(t_map *map, t_matrix3x3 mat)
 		i++;
 	}
 	return (map);
-}
-
-int	draw_line_low(t_img *img, t_pt start, t_pt end)
-{
-	int		err;
-	int		yi;
-	t_pt	delta;
-	t_pt	cur;
-
-	delta.x = end.x - start.x;
-	delta.y = end.y - start.y;
-	yi = 1;
-	if (delta.y < 0)
-		{
-			yi = -1;
-			delta.y = -delta.y;
-		}
-	err = 2 * delta.y - delta.x;
-	cur = start;
-	while (cur.x < end.x)
-	{
-		img_pix_put(img, cur);
-		if (err > 0)
-			{
-				cur.y += yi;
-				err = err + (2 * (delta.y - delta.x));
-			}
-		else
-			err = err + 2 * delta.y;
-		cur.color = get_color(cur, start, end, delta);
-		cur.x++;
-	}
-	return (0);
-}
-
-int	draw_line_high(t_img *img, t_pt start, t_pt end)
-{
-	int		err;
-	int		xi;
-	t_pt	delta;
-	t_pt	cur;
-
-	delta.x = end.x - start.x;
-	delta.y = end.y - start.y;
-	xi = 1;
-	if (delta.x < 0)
-		{
-			xi = -1;
-			delta.x = -delta.x;
-		}
-	err = 2 * delta.x - delta.y;
-	cur = start;
-	while (cur.y < end.y)
-	{
-		img_pix_put(img, cur);
-		if (err > 0)
-			{
-				cur.x += xi;
-				err = err + (2 * (delta.x - delta.y));
-			}
-		else
-			err = err + 2 * delta.x;
-		cur.color = get_color(cur, start, end, delta);
-		cur.y++;
-	}
-	return (0);
-}
-
-int	draw_line(t_img *img, t_pt start, t_pt end)
-{
-	if (fabsf(end.y - start.y) < fabsf(end.x - start.x))
-	{
-		if (start.x > end.x)
-			return(draw_line_low(img, end, start));
-		return(draw_line_low(img, start, end));
-	}
-	if (start.y > end.y)
-		return(draw_line_high(img, end, start));
-	return(draw_line_high(img, start, end));
-	return (-1);
 }
 
 void	draw_map(t_img *img, t_map *map, t_pt offset)
@@ -290,89 +156,6 @@ void	render_background(t_img *img, int color)
 	}
 }
 
-int	loop_hook(t_data *data)
-{
-	t_map	*map;
-	t_pt	offset;
-
-	if (data->win_ptr == NULL)
-		return (1);
-	render_background(&data->img, DGREY);
-	map = data->map;
-	offset.x = 0;
-	offset.y = 0;
-	offset.x = WIN_W / 2;
-	offset.y = WIN_H / 2;
-	offset.z = 0;
-	draw_map(&data->img, map, offset);
-	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img.mlx_img, 0, 0);
-	return (0);
-}
-
-int	key_hook(int keysym, t_data *data)
-{
-	if (keysym == XK_Escape)
-	{
-		mlx_destroy_window(data->mlx_ptr, data->win_ptr);
-		data->win_ptr = NULL;
-	}
-	return (0);
-}
-
-int	close_app(t_data *data)
-{
-	mlx_destroy_window(data->mlx_ptr, data->win_ptr);
-	data->win_ptr = NULL;
-	return (0);
-}
-
-void	replace_newline(unsigned int i, char *s)
-{
-	(void)i;
-	if (*s == '\n')
-		*s = ' ';
-}
-
-int	print_parsed_file(char **parsed_file)
-{
-	int	i;
-
-	i = 0;
-	while (parsed_file[i] != NULL)
-	{
-		ft_printf("%s\n", parsed_file[i]);
-		i++;
-	}
-	return (i);
-}
-
-void	free_str_arr(char **str_arr)
-{
-	int	i;
-
-	i = 0;
-	while (str_arr[i] != NULL)
-	{
-		free(str_arr[i]);
-		i++;
-	}
-	free(str_arr);
-}
-
-int		count_cols(char *s)
-{
-	int	cols;
-	char **split;
-
-	cols = 0;
-	ft_striteri(s, replace_newline);
-	split = ft_split(s, ' ');
-	while (split[cols] != NULL)
-		cols++;
-	free_str_arr(split);
-	return (cols);
-}
-
 int	main(int argc, char **argv)
 {
 	t_data	data;
@@ -420,12 +203,8 @@ int	main(int argc, char **argv)
 			line = "";
 		}
 	}
-	//ft_printf(file);
 	ft_striteri(file, replace_newline);
-	//ft_printf(file);
 	data.parsed_file = ft_split(file, ' ');
-	//ft_printf("parsed_file length: %d\n", print_parsed_file(data.parsed_file));
-	//ft_printf("x_dim: %d, y_dim: %d\n", data.map->x_dim, data.map->y_dim);
 	free(file);
 	if (close(fd) == -1)
 	{

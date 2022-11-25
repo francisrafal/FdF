@@ -21,7 +21,11 @@ HEADLIST	:= fdf.h
 HEADERS		:= $(addprefix ${HEADDIR}, ${HEADLIST})
 
 SRCSDIR		:= ./src/
-SRCSLIST	:= main.c
+SRCSLIST	:= main.c \
+				hooks.c \
+				file_handling.c \
+				color_handling.c \
+				lines.c
 SRCS		:= $(addprefix ${SRCSDIR}, ${SRCSLIST})
 
 OBJSDIR		:= ./obj/
