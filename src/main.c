@@ -106,28 +106,21 @@ void	draw_map(t_img *img, t_map *map, t_pt offset)
 	t_pt	pt;
 	t_pt	neighbour_right;
 	t_pt	neighbour_down;
+	t_pt	*cur;
 
 	i = 0;
 	while (i < map->x_dim * map->y_dim)
 	{
-		pt.x = (map->pt_arr + i)->x + offset.x;
-		pt.y = (map->pt_arr + i)->y + offset.y;
-		pt.z = (map->pt_arr + i)->z + offset.z;
-		pt.color = (map->pt_arr + i)->color;
+		cur = map->pt_arr + i;
+		pt = vec_add(*cur, offset);
 		if (i % map->x_dim != map->x_dim - 1)
 		{
-			neighbour_right.x = (map->pt_arr + i + 1)->x + offset.x;
-			neighbour_right.y = (map->pt_arr + i + 1)->y + offset.y;
-			neighbour_right.z = (map->pt_arr + i + 1)->z + offset.z;
-			neighbour_right.color = (map->pt_arr + i + 1)->color;
+			neighbour_right = vec_add(*(cur + 1), offset);
 			draw_line(img, pt, neighbour_right);
 		}
 		if (i < map->x_dim * map->y_dim - map->x_dim)
 		{
-			neighbour_down.x = (map->pt_arr + i + map->x_dim)->x + offset.x;
-			neighbour_down.y = (map->pt_arr + i + map->x_dim)->y + offset.y;
-			neighbour_down.z = (map->pt_arr + i + map->x_dim)->z + offset.z;
-			neighbour_down.color = (map->pt_arr + i + map->x_dim)->color;
+			neighbour_down = vec_add(*(cur + map->x_dim), offset);
 			draw_line(img, pt, neighbour_down);
 		}
 		i++;

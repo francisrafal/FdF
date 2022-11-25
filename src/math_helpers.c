@@ -22,3 +22,14 @@ t_pt	mat_mult(t_matrix3x3 mat, t_pt pt)
     res.color = pt.color;
 	return (res);
 }
+
+t_pt	vec_add(t_pt pt1, t_pt pt2)
+{
+	t_pt	sum;
+
+    sum.x = pt1.x + pt2.x;
+    sum.y = pt1.y + pt2.y;
+    sum.z = pt1.z + pt2.z;
+    sum.color = pt1.color;
+    return (sum);
+}
