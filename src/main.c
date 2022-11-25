@@ -17,16 +17,67 @@ void	img_pix_put(t_img *img, t_pt pt)
 	char	*pixel;
 	int		x;
 	int		y;
-	int		z;
 
 	x = round(pt.x);
 	y = round(pt.y);
-	z = round(pt.z);
 
 	if (x < 0 || x >= WIN_W || y < 0 || y >= WIN_H)
 		return ;
 	pixel = img->addr + y * img->line_len + x * (img->bpp / 8);
 	*(int *)pixel = pt.color;
+}
+
+float_t	get_percentage(int start, int end, int cur)
+{
+	float_t	position;
+	float_t	delta;
+
+	delta = end - start;
+	if (delta == 0)
+		return (1.0);
+	position = cur - start;
+	return (position / delta);
+}
+
+int	calc_color_channel(int start, int end, float_t percentage)
+{
+	int	color_channel;
+
+	color_channel = (1 - percentage) * start + percentage * end;
+	return (color_channel);	
+}
+
+int	get_color(t_pt cur, t_pt start, t_pt end, t_pt delta)
+{
+	int	red;
+	int	green;
+	int	blue;
+	float_t	percentage;
+
+	if (cur.color == end.color)
+		return (cur.color);
+	if (delta.x > delta.y)
+		percentage = get_percentage(start.x, end.x, cur.x);
+	else
+		percentage = get_percentage(start.y, end.y, cur.y);
+	red = calc_color_channel((start.color >> 16) & 0xFF, (end.color >> 16) & 0xFF, percentage);
+	green = calc_color_channel((start.color >> 8) & 0xFF, (end.color >> 8) & 0xFF, percentage);
+	blue = calc_color_channel(start.color & 0xFF, end.color & 0xFF, percentage);
+	return ((red << 16) | (green << 8) | blue);
+}
+
+int	get_height_gradient_color(t_pt cur, t_pt start, t_pt end)
+{
+	int	red;
+	int	green;
+	int	blue;
+	float_t	percentage;
+
+	percentage = get_percentage(fabsf(start.z), fabsf(end.z), fabsf(cur.z));
+	red = calc_color_channel((start.color >> 16) & 0xFF, (end.color >> 16) & 0xFF, percentage);
+	green = calc_color_channel((start.color >> 8) & 0xFF, (end.color >> 8) & 0xFF, percentage);
+	blue = calc_color_channel(start.color & 0xFF, end.color & 0xFF, percentage);
+	return ((red << 16) | (green << 8) | blue);
 }
 
 t_map	*generate_map(t_data *data)
@@ -36,8 +87,13 @@ t_map	*generate_map(t_data *data)
 	t_pt	pt;
 	int		i;
 	int		j;
+	t_pt	ground;
+	t_pt	max;
+	t_pt	min;
 
 	map = data->map;
+	map->min_height = 0;
+	map->max_height = 0;
 	map->pt_arr = malloc(map->x_dim * map->y_dim * sizeof(t_pt));
 	if (map->pt_arr == NULL)
 		return (NULL);
@@ -54,13 +110,31 @@ t_map	*generate_map(t_data *data)
 			cur = map->pt_arr + i * map->x_dim + j;
 			*cur = pt;
 			cur->z = ft_atoi(data->parsed_file[i * map->x_dim + j]);
-			cur->color = DRED + cur->z * 10;
+			if (cur->z < map->min_height)
+				map->min_height = cur->z;
+			if (cur->z > map->max_height)
+				map->max_height = cur->z;
+			cur->color = GROUND_COLOR;
 			pt.x += map->space;
 			j++;
 		}
 		pt.y += map->space;
 		i++;
 	}
+	ground = (t_pt){0, 0, 0, GROUND_COLOR};	
+	max = (t_pt){0, 0, map->max_height, HIGH_COLOR};	
+	min = (t_pt){0, 0, map->min_height, LOW_COLOR};
+	i = 0;
+	while (i < map->x_dim * map->y_dim)
+	{
+		cur = map->pt_arr + i;
+		if (cur->z > 0)
+			cur->color = get_height_gradient_color(*cur, ground, max);
+		if (cur->z < 0)
+			cur->color = get_height_gradient_color(*cur, ground, min);
+		i++;
+	}
+	//ft_printf("min_height: %d\nmax_height: %d\n", map->min_height, map->max_height);
 	return (map);
 }
 
@@ -86,88 +160,66 @@ t_map	*transform_map(t_map *map, t_matrix3x3 mat)
 
 int	draw_line_low(t_img *img, t_pt start, t_pt end)
 {
-	int dx;
-	int dy;
-	float_t	dcolor;
-	int err;
-	int yi;
-	float_t	ci;
+	int		err;
+	int		yi;
+	t_pt	delta;
+	t_pt	cur;
 
-	dx = end.x - start.x;
-	dy = end.y - start.y;
-	dcolor = end.color - start.color;
+	delta.x = end.x - start.x;
+	delta.y = end.y - start.y;
 	yi = 1;
-	if (dy < 0)
+	if (delta.y < 0)
 		{
 			yi = -1;
-			dy = -dy;
+			delta.y = -delta.y;
 		}
-	ci = 0;
-	if (dx != 0)
-		ci = dcolor / abs(dx);
-	err = 2 * dy - dx;
-	while (start.x < end.x)
+	err = 2 * delta.y - delta.x;
+	cur = start;
+	while (cur.x < end.x)
 	{
-		img_pix_put(img, start);
+		img_pix_put(img, cur);
 		if (err > 0)
 			{
-				start.y += yi;
-				err = err + (2 * (dy - dx));
+				cur.y += yi;
+				err = err + (2 * (delta.y - delta.x));
 			}
 		else
-			err = err + 2 * dy;
-		// CHANGE EVERYTHING ABOUT COLORS HERE:
-		ci += ci;
-		if (fabsf(ci) > 1)
-		{
-			start.color += ci;
-			ci = ci - floor(fabsf(ci));
-		}
-		start.x++;
+			err = err + 2 * delta.y;
+		cur.color = get_color(cur, start, end, delta);
+		cur.x++;
 	}
 	return (0);
 }
 
 int	draw_line_high(t_img *img, t_pt start, t_pt end)
 {
-	int dx;
-	int dy;
-	float_t	dcolor;
-	int err;
-	int xi;
-	float_t ci;
+	int		err;
+	int		xi;
+	t_pt	delta;
+	t_pt	cur;
 
-	dx = end.x - start.x;
-	dy = end.y - start.y;
-	dcolor = end.color - start.color;
+	delta.x = end.x - start.x;
+	delta.y = end.y - start.y;
 	xi = 1;
-	if (dx < 0)
+	if (delta.x < 0)
 		{
 			xi = -1;
-			dx = -dx;
+			delta.x = -delta.x;
 		}
-	ci = 0;
-	if (dy != 0)
+	err = 2 * delta.x - delta.y;
+	cur = start;
+	while (cur.y < end.y)
 	{
-		if (dcolor < 0)
-			ci = floor(dcolor / abs(dy));
-		else
-			ci = ceil(dcolor / abs(dy));
-	}
-	err = 2 * dx - dy;
-	while (start.y < end.y)
-	{
-		img_pix_put(img, start);
+		img_pix_put(img, cur);
 		if (err > 0)
 			{
-				start.x += xi;
-		// CHANGE EVERYTHING ABOUT COLORS HERE:
-				start.color += ci;
-				err = err + (2 * (dx - dy));
+				cur.x += xi;
+				err = err + (2 * (delta.x - delta.y));
 			}
 		else
-			err = err + 2 * dx;
-		start.y++;
+			err = err + 2 * delta.x;
+		cur.color = get_color(cur, start, end, delta);
+		cur.y++;
 	}
 	return (0);
 }
@@ -245,7 +297,7 @@ int	loop_hook(t_data *data)
 
 	if (data->win_ptr == NULL)
 		return (1);
-	//render_background(&data->img, DGREY);
+	render_background(&data->img, DGREY);
 	map = data->map;
 	offset.x = 0;
 	offset.y = 0;
@@ -264,6 +316,13 @@ int	key_hook(int keysym, t_data *data)
 		mlx_destroy_window(data->mlx_ptr, data->win_ptr);
 		data->win_ptr = NULL;
 	}
+	return (0);
+}
+
+int	close_app(t_data *data)
+{
+	mlx_destroy_window(data->mlx_ptr, data->win_ptr);
+	data->win_ptr = NULL;
 	return (0);
 }
 
@@ -377,6 +436,7 @@ int	main(int argc, char **argv)
 	t_matrix3x3 rot_z_45;
 	t_matrix3x3 rot_x_iso;
 	t_matrix3x3 scale_10;
+	t_matrix3x3 scale_2;
 	t_matrix3x3 scale_30;
 	t_matrix3x3 scale_z_1_2;
 	
@@ -385,12 +445,14 @@ int	main(int argc, char **argv)
 	rot_x_iso = (t_matrix3x3){1, 0, 0, 0, cos(ISO), -sin(ISO), 0, sin(ISO), cos(ISO)};
 	scale_10 = (t_matrix3x3){10, 0, 0, 0, 10, 0, 0, 0, 10};
 	scale_30 = (t_matrix3x3){30, 0, 0, 0, 30, 0, 0, 0, 30};
-	scale_z_1_2 = (t_matrix3x3){1, 0, 0, 0, 1, 0, 0, 0, 0.1};
+	scale_2 = (t_matrix3x3){2, 0, 0, 0, 2, 0, 0, 0, 2};
+	scale_z_1_2 = (t_matrix3x3){1, 0, 0, 0, 1, 0, 0, 0, 0.5};
 	data.map = generate_map(&data);
 	data.map = transform_map(data.map, scale_z_1_2);
 	data.map = transform_map(data.map, rot_x_90);
 	data.map = transform_map(data.map, rot_z_45);
 	data.map = transform_map(data.map, rot_x_iso);
+	//data.map = transform_map(data.map, scale_2);
 	data.map = transform_map(data.map, scale_10);
 	//data.map = transform_map(data.map, scale_30);
 	data.mlx_ptr = mlx_init();
@@ -409,6 +471,7 @@ int	main(int argc, char **argv)
 	data.img.addr = mlx_get_data_addr(data.img.mlx_img, &data.img.bpp, &data.img.line_len, &data.img.endian);
 	mlx_loop_hook(data.mlx_ptr, loop_hook, &data);
 	mlx_key_hook(data.win_ptr, key_hook, &data);
+	mlx_hook(data.win_ptr, DestroyNotify, 0, close_app, &data);
 	mlx_loop(data.mlx_ptr);
 	mlx_destroy_image(data.mlx_ptr, data.img.mlx_img);
 	mlx_destroy_display(data.mlx_ptr);

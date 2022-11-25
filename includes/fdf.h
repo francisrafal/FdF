@@ -17,6 +17,7 @@
 # include <stdlib.h>
 # include <math.h>
 # include <X11/keysym.h>
+# include <X11/X.h>
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <fcntl.h>
@@ -27,11 +28,15 @@
 # define DRED	0x00660000
 # define GREEN	0x0000FF00
 # define BLUE	0x000000FF
+# define DBLUE	0x00000066
 # define WHITE	0x00FFFFFF
 # define DGREEN	0x00006600
 # define BLACK	0x00000000
 # define GREY	0x00888888
 # define DGREY	0x00333333
+# define GROUND_COLOR	RED
+# define HIGH_COLOR		WHITE
+# define LOW_COLOR		BLACK
 # define ISO	0.6154
 
 typedef struct s_pt
@@ -48,8 +53,8 @@ typedef struct s_map
 	int		x_dim;
 	int		y_dim;	
 	int		space;
-	float_t	min_height;
-	float_t	max_height;
+	int		min_height;
+	int		max_height;
 }			t_map;
 
 typedef struct s_matrix3x3
