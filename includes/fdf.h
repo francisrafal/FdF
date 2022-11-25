@@ -119,5 +119,7 @@ void	fill_map(t_data *data, t_map *map);
 void	zoom(t_map *map);
 void	scale_z(t_map *map);
 char	*get_file(int fd, t_data *data);
+int		lines_consistent(int cols, t_data *data);
+void	append_line_to_file(char **line, char **file);
 
 #endif
