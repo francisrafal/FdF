@@ -24,6 +24,7 @@ SRCSDIR		:= ./src/
 SRCSLIST	:= main.c \
 				hooks.c \
 				file_handling.c \
+				file_handling2.c \
 				color_handling.c \
 				lines.c \
 				math_helpers.c \
