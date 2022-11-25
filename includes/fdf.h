@@ -107,5 +107,6 @@ void	replace_newline(unsigned int i, char *s);
 int		print_parsed_file(char **parsed_file);
 void	free_str_arr(char **str_arr);
 int		count_cols(char *s);
+t_pt	mat_mult(t_matrix3x3 mat, t_pt pt);
 
 #endif

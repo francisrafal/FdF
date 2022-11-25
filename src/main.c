@@ -88,17 +88,13 @@ t_map	*transform_map(t_map *map, t_matrix3x3 mat)
 {
 
 	int		i;
-	t_pt	pt;
 	t_pt	*cur;
 
 	i = 0;
 	while (i < map->x_dim * map->y_dim)
 	{
 		cur = map->pt_arr + i;
-		pt = *cur;
-		cur->x = pt.x * mat.c1r1 + pt.y * mat.c2r1 + pt.z * mat.c3r1;
-		cur->y = pt.x * mat.c1r2 + pt.y * mat.c2r2 + pt.z * mat.c3r2;
-		cur->z = pt.x * mat.c1r3 + pt.y * mat.c2r3 + pt.z * mat.c3r3;
+		*cur = mat_mult(mat, *cur);
 		i++;
 	}
 	return (map);
