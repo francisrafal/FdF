@@ -110,7 +110,8 @@ int		count_cols(char *s);
 t_pt	mat_mult(t_matrix3x3 mat, t_pt pt);
 t_pt	vec_add(t_pt pt1, t_pt pt2);
 int		parse_file(t_data *data, char *filename);
-void    generate_iso_view(t_map *map);
+void	generate_iso_view(t_map *map);
 int		start_mlx(t_data *data);
+t_pt	vec_sub(t_pt pt1, t_pt pt2);
 
 #endif
