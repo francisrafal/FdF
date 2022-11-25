@@ -20,7 +20,6 @@ void	img_pix_put(t_img *img, t_pt pt)
 
 	x = round(pt.x);
 	y = round(pt.y);
-
 	if (x < 0 || x >= WIN_W || y < 0 || y >= WIN_H)
 		return ;
 	pixel = img->addr + y * img->line_len + x * (img->bpp / 8);
@@ -79,22 +78,6 @@ t_map	*generate_map(t_data *data)
 			cur->color = get_height_gradient_color(*cur, ground, max);
 		if (cur->z < 0)
 			cur->color = get_height_gradient_color(*cur, ground, min);
-		i++;
-	}
-	return (map);
-}
-
-t_map	*transform_map(t_map *map, t_matrix3x3 mat)
-{
-
-	int		i;
-	t_pt	*cur;
-
-	i = 0;
-	while (i < map->x_dim * map->y_dim)
-	{
-		cur = map->pt_arr + i;
-		*cur = mat_mult(mat, *cur);
 		i++;
 	}
 	return (map);

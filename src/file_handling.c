@@ -32,10 +32,10 @@ void	free_str_arr(char **str_arr)
 	free(str_arr);
 }
 
-int		count_cols(char *s)
+int	count_cols(char *s)
 {
-	int	cols;
-	char **split;
+	int		cols;
+	char	**split;
 
 	cols = 0;
 	ft_striteri(s, replace_newline);

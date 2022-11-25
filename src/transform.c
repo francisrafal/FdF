@@ -12,15 +12,15 @@
 
 #include "fdf.h"
 
-void    generate_iso_view(t_map *map)
+void	generate_iso_view(t_map *map)
 {
-	t_matrix3x3 rot_x_90;
-	t_matrix3x3 rot_z_45;
-	t_matrix3x3 rot_x_iso;
-	t_matrix3x3 scale_10;
-	t_matrix3x3 scale_2;
-	t_matrix3x3 scale_30;
-	t_matrix3x3 scale_z_1_2;
+	t_matrix3x3	rot_x_90;
+	t_matrix3x3	rot_z_45;
+	t_matrix3x3	rot_x_iso;
+	t_matrix3x3	scale_10;
+	t_matrix3x3	scale_2;
+	t_matrix3x3	scale_30;
+	t_matrix3x3	scale_z_1_2;
 	
 	rot_x_90 = (t_matrix3x3){1, 0, 0, 0, 0, 1, 0, -1, 0};
 	rot_z_45 = (t_matrix3x3){cos(M_PI_4), 0, sin(M_PI_4), 0, 1, 0, -sin(M_PI_4), 0, cos(M_PI_4)};
@@ -36,4 +36,19 @@ void    generate_iso_view(t_map *map)
 	//transform_map(map, scale_2);
 	transform_map(map, scale_10);
 	//transform_map(map, scale_30);
+}
+
+t_map	*transform_map(t_map *map, t_matrix3x3 mat)
+{
+	int		i;
+	t_pt	*cur;
+
+	i = 0;
+	while (i < map->x_dim * map->y_dim)
+	{
+		cur = map->pt_arr + i;
+		*cur = mat_mult(mat, *cur);
+		i++;
+	}
+	return (map);
 }
