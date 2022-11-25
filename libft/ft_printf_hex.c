@@ -73,13 +73,6 @@ static int	ft_putnbr_base(unsigned long long nbr, char *base)
 		write(1, &base[0], 1);
 		return (1);
 	}
-	/*
-	if (nbr < 0)
-	{
-		abs_val = (-1) * abs_val;
-		write(1, "-", 1);
-	}
-	*/
 	return (ft_printnbr(abs_val, base, b));
 }
 

@@ -53,8 +53,6 @@ static void	fill_arr(char const *s, char c, char **arr)
 			while (s[i + j] && s[i + j] != c)
 				j++;
 			arr[arr_size] = (char *)malloc((j + 1) * sizeof(char));
-			if (arr[arr_size] == NULL)
-				return ;
 			k = 0;
 			j = j + i;
 			while (i < j)
