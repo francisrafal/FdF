@@ -113,5 +113,11 @@ int		parse_file(t_data *data, char *filename);
 void	generate_iso_view(t_map *map);
 int		start_mlx(t_data *data);
 t_pt	vec_sub(t_pt pt1, t_pt pt2);
+void	set_point_colors(t_map *map);
+void	set_height_range(t_map *map, t_pt *cur);
+void	fill_map(t_data *data, t_map *map);
+void	zoom(t_map *map);
+void	scale_z(t_map *map);
+char	*get_file(int fd, t_data *data);
 
 #endif

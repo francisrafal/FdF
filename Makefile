@@ -27,7 +27,9 @@ SRCSLIST	:= main.c \
 				color_handling.c \
 				lines.c \
 				math_helpers.c \
-				transform.c
+				transform.c \
+				draw.c \
+				generate_map.c
 SRCS		:= $(addprefix ${SRCSDIR}, ${SRCSLIST})
 
 OBJSDIR		:= ./obj/

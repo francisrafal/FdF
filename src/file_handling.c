@@ -49,10 +49,7 @@ int	count_cols(char *s)
 int	parse_file(t_data *data, char *filename)
 {
 	int		fd;
-	char	*line;
 	char	*file;
-	char	*tmp;
-	int		cols;
 
 	fd = open(filename, O_RDONLY);
 	if (fd == -1)
@@ -63,6 +60,27 @@ int	parse_file(t_data *data, char *filename)
 	data->map = malloc(sizeof(t_map));
 	if (data->map == NULL)
 		return (-1);
+	file = get_file(fd, data);
+	if (file == NULL)
+		return (-1);
+	ft_striteri(file, replace_newline);
+	data->parsed_file = ft_split(file, ' ');
+	free(file);
+	if (close(fd) == -1)
+	{
+		ft_putstr_fd("Failed to close file\n", 2);
+		return (-1);
+	}
+	return (0);
+}
+
+char	*get_file(int fd, t_data *data)
+{
+	char	*line;
+	char	*file;
+	int		cols;
+	char	*tmp;
+
 	line = "";
 	file = malloc(sizeof(char));
 	file[0] = '\0';
@@ -76,7 +94,7 @@ int	parse_file(t_data *data, char *filename)
 			if (data->map->y_dim != 0 && data->map->x_dim != cols)
 			{
 				ft_putstr_fd("Found wrong line length. Exiting.\n", 2);
-				return (-1);
+				return (NULL);
 			}
 			data->map->x_dim = cols;
 			data->map->y_dim += 1;
@@ -87,13 +105,5 @@ int	parse_file(t_data *data, char *filename)
 			line = "";
 		}
 	}
-	ft_striteri(file, replace_newline);
-	data->parsed_file = ft_split(file, ' ');
-	free(file);
-	if (close(fd) == -1)
-	{
-		ft_putstr_fd("Failed to close file\n", 2);
-		return (-1);
-	}
-	return (0);
+	return (file);
 }
