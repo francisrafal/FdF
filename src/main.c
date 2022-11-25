@@ -148,104 +148,17 @@ void	render_background(t_img *img, int color)
 int	main(int argc, char **argv)
 {
 	t_data	data;
-	int		fd;
-	char	*line;
-	char	*file;
-	char	*tmp;
-	int		cols;
 
 	if (argc != 2)
 	{
 		ft_putstr_fd("Usage: ./fdf MAPFILE\n", 2);
 		return (-1);
 	}
-	fd = open(argv[1], O_RDONLY);
-	if (fd == -1)
-	{
-		ft_putstr_fd("Failed to open file\n", 2);
+	if (parse_file(&data, argv[1]) == -1)
 		return (-1);
-	}
-	data.map = malloc(sizeof(t_map));
-	if (data.map == NULL)
+	generate_map(&data);
+	generate_iso_view(data.map);
+	if (start_mlx(&data) == -1)
 		return (-1);
-	line = "";
-	file = malloc(sizeof(char));
-	file[0] = '\0';
-	data.map->y_dim = 0;
-	while (line != NULL)
-	{
-		line = get_next_line(fd);
-		if (line != NULL)
-		{
-			cols = count_cols(line);
-			if (data.map->y_dim != 0 && data.map->x_dim != cols)
-			{
-				ft_putstr_fd("Found wrong line length. Exiting.\n", 2);
-				return (-1);
-			}
-			data.map->x_dim = cols;
-			data.map->y_dim += 1;
-			tmp = file;
-			file = ft_strjoin(tmp, line);
-			free(tmp);
-			free(line);
-			line = "";
-		}
-	}
-	ft_striteri(file, replace_newline);
-	data.parsed_file = ft_split(file, ' ');
-	free(file);
-	if (close(fd) == -1)
-	{
-		ft_putstr_fd("Failed to close file\n", 2);
-		return (-1);
-	}
-	t_matrix3x3 rot_x_90;
-	t_matrix3x3 rot_z_45;
-	t_matrix3x3 rot_x_iso;
-	t_matrix3x3 scale_10;
-	t_matrix3x3 scale_2;
-	t_matrix3x3 scale_30;
-	t_matrix3x3 scale_z_1_2;
-	
-	rot_x_90 = (t_matrix3x3){1, 0, 0, 0, 0, 1, 0, -1, 0};
-	rot_z_45 = (t_matrix3x3){cos(M_PI_4), 0, sin(M_PI_4), 0, 1, 0, -sin(M_PI_4), 0, cos(M_PI_4)};
-	rot_x_iso = (t_matrix3x3){1, 0, 0, 0, cos(ISO), -sin(ISO), 0, sin(ISO), cos(ISO)};
-	scale_10 = (t_matrix3x3){10, 0, 0, 0, 10, 0, 0, 0, 10};
-	scale_30 = (t_matrix3x3){30, 0, 0, 0, 30, 0, 0, 0, 30};
-	scale_2 = (t_matrix3x3){2, 0, 0, 0, 2, 0, 0, 0, 2};
-	scale_z_1_2 = (t_matrix3x3){1, 0, 0, 0, 1, 0, 0, 0, 0.5};
-	data.map = generate_map(&data);
-	data.map = transform_map(data.map, scale_z_1_2);
-	data.map = transform_map(data.map, rot_x_90);
-	data.map = transform_map(data.map, rot_z_45);
-	data.map = transform_map(data.map, rot_x_iso);
-	//data.map = transform_map(data.map, scale_2);
-	data.map = transform_map(data.map, scale_10);
-	//data.map = transform_map(data.map, scale_30);
-	data.mlx_ptr = mlx_init();
-	if (data.mlx_ptr == NULL)
-	{
-		ft_putstr_fd("Failed to set up the connection to the X server\n", 2);
-		return (-1);
-	}
-	data.win_ptr = mlx_new_window(data.mlx_ptr, WIN_W, WIN_H, "FdF");
-	if (data.win_ptr == NULL)
-	{
-		ft_putstr_fd("Failed to create a new window\n", 2);
-		return (-1);
-	}
-	data.img.mlx_img = mlx_new_image(data.mlx_ptr, WIN_W, WIN_H);
-	data.img.addr = mlx_get_data_addr(data.img.mlx_img, &data.img.bpp, &data.img.line_len, &data.img.endian);
-	mlx_loop_hook(data.mlx_ptr, loop_hook, &data);
-	mlx_key_hook(data.win_ptr, key_hook, &data);
-	mlx_hook(data.win_ptr, DestroyNotify, 0, close_app, &data);
-	mlx_loop(data.mlx_ptr);
-	mlx_destroy_image(data.mlx_ptr, data.img.mlx_img);
-	mlx_destroy_display(data.mlx_ptr);
-	free(data.map->pt_arr);
-	free(data.map);
-	free(data.mlx_ptr);
-	free_str_arr(data.parsed_file);
 	return (0);
 }
