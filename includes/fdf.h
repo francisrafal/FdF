@@ -35,7 +35,7 @@
 # define GREY	0x00888888
 # define DGREY	0x00333333
 # define GROUND_COLOR	RED
-# define HIGH_COLOR		WHITE
+# define HIGH_COLOR		BLUE
 # define LOW_COLOR		BLACK
 # define ISO	0.6154
 

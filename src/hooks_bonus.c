@@ -20,11 +20,10 @@ int	loop_hook(t_data *data)
 		return (1);
 	render_background(&data->img, DGREY);
 	map = data->map;
-	offset.x = 0;
-	offset.y = 0;
 	offset.x = WIN_W / 2;
 	offset.y = WIN_H / 2;
 	offset.z = 0;
+	rotate_y(data->map, -0.01);
 	draw_map(&data->img, map, offset);
 	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr,
 		data->img.mlx_img, 0, 0);
