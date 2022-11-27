@@ -23,7 +23,8 @@ int	loop_hook(t_data *data)
 	offset.x = WIN_W / 2;
 	offset.y = WIN_H / 2;
 	offset.z = 0;
-	rotate_y(data->map, -0.01);
+	if (data->animate_on)
+		rotate_y(data->map, -0.01);
 	draw_map(&data->img, map, offset);
 	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr,
 		data->img.mlx_img, 0, 0);
@@ -58,6 +59,8 @@ int	key_hook(int keysym, t_data *data)
 		rotate_y(data->map, -0.1);
 	if (keysym == XK_a)
 		rotate_y(data->map, 0.1);
+	if (keysym == XK_space)
+		data->animate_on ^= 0x1;
 	return (0);
 }
 
