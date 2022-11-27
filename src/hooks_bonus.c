@@ -27,6 +27,7 @@ int	loop_hook(t_data *data)
 	draw_map(&data->img, map, offset);
 	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr,
 		data->img.mlx_img, 0, 0);
+	render_instructions(data, WHITE);
 	return (0);
 }
 

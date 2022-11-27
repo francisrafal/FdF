@@ -124,5 +124,6 @@ void	scale_z(t_map *map, float_t factor);
 char	*get_file(int fd, t_data *data);
 int		lines_consistent(int cols, t_data *data);
 void	append_line_to_file(char **line, char **file);
+void	render_instructions(t_data *data, int color);
 
 #endif
