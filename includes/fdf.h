@@ -56,6 +56,10 @@ typedef struct s_map
 	int		space;
 	int		min_height;
 	int		max_height;
+	int		min_x;
+	int		max_x;
+	int		min_y;
+	int		max_y;
 }			t_map;
 
 typedef struct s_matrix3x3
@@ -127,5 +131,6 @@ char	*get_file(int fd, t_data *data);
 int		lines_consistent(int cols, t_data *data);
 void	append_line_to_file(char **line, char **file);
 void	render_instructions(t_data *data, int color);
+void	autoscale(t_map *map);
 
 #endif

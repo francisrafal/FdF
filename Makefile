@@ -116,6 +116,8 @@ fclean:			clean
 				@echo ""
 				@echo "${CYAN}Deleting $(NAME) Executable ...${RESET}"
 				${RM} ${NAME}
+				@echo "${CYAN}Deleting $(BONUSNAME) Executable ...${RESET}"
+				${RM} ${BONUSNAME}
 				make -C ${LIBFTDIR} fclean
 
 re:				fclean all
