@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "fdf.h"
+#include <stdio.h>
 
 int	main(int argc, char **argv)
 {
@@ -24,9 +25,13 @@ int	main(int argc, char **argv)
 	if (parse_file(&data, argv[1]) == -1)
 		return (-1);
 	generate_map(&data);
+	printf("%f %f %f\n%f %f %f\n %f %f %f\n", data.map->base_i.x, data.map->base_j.x,data.map->base_k.x,data.map->base_i.y,data.map->base_j.y,data.map->base_k.y,data.map->base_i.z,data.map->base_j.z,data.map->base_k.z);
 	scale_z(data.map, 1);
 	generate_iso_view(data.map);
+	printf("%f %f %f\n%f %f %f\n %f %f %f\n", data.map->base_i.x, data.map->base_j.x,data.map->base_k.x,data.map->base_i.y,data.map->base_j.y,data.map->base_k.y,data.map->base_i.z,data.map->base_j.z,data.map->base_k.z);
+	scale_z(data.map, 1);
 	autoscale(data.map);
+	printf("%f %f %f\n%f %f %f\n %f %f %f\n", data.map->base_i.x, data.map->base_j.x,data.map->base_k.x,data.map->base_i.y,data.map->base_j.y,data.map->base_k.y,data.map->base_i.z,data.map->base_j.z,data.map->base_k.z);
 	data.animate_on = 0;
 	if (start_mlx(&data) == -1)
 		return (-1);
