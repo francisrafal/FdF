@@ -52,10 +52,7 @@ int	key_hook(int keysym, t_data *data)
 	if (keysym == XK_Down)
 		translate(data->map, (t_pt){0, 10, 0, 0});
 	if (keysym == XK_w)
-	{
 		rotate_x(data->map, -0.1);
-		printf("%f %f %f\n%f %f %f\n %f %f %f\n", data->map->base_i.x, data->map->base_j.x,data->map->base_k.x,data->map->base_i.y,data->map->base_j.y,data->map->base_k.y,data->map->base_i.z,data->map->base_j.z,data->map->base_k.z);
-	}
 	if (keysym == XK_s)
 		rotate_x(data->map, 0.1);
 	if (keysym == XK_d)
