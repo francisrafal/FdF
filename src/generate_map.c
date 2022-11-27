@@ -22,7 +22,7 @@ t_map	*generate_map(t_data *data)
 	map->pt_arr = malloc(map->x_dim * map->y_dim * sizeof(t_pt));
 	if (map->pt_arr == NULL)
 		return (NULL);
-	map->space = 1;
+	map->space = 10;
 	fill_map(data, map);
 	set_point_colors(map);
 	return (map);

@@ -30,6 +30,7 @@ SRCSLIST		:= main.c \
 					lines.c \
 					math_helpers.c \
 					transform.c \
+					transform2.c \
 					draw.c \
 					generate_map.c
 SRCS			:= $(addprefix ${SRCSDIR}, ${SRCSLIST})
@@ -41,6 +42,7 @@ BONUSSRCSLIST	:= main.c \
 					lines.c \
 					math_helpers.c \
 					transform.c \
+					transform2.c \
 					draw.c \
 					generate_map.c
 BONUSSRCS		:= $(addprefix ${SRCSDIR}, ${BONUSSRCSLIST})

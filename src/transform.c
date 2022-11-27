@@ -14,30 +14,17 @@
 
 void	generate_iso_view(t_map *map)
 {
-	t_matrix3x3	rot_x_90;
-	t_matrix3x3	rot_z_45;
-	t_matrix3x3	rot_x_iso;
-
-	rot_x_90 = (t_matrix3x3){1, 0, 0, 0, 0, 1, 0, -1, 0};
-	rot_z_45 = (t_matrix3x3){
-		cos(M_PI_4), 0, sin(M_PI_4),
-		0, 1, 0,
-		-sin(M_PI_4), 0, cos(M_PI_4)};
-	rot_x_iso = (t_matrix3x3){
-		1, 0, 0,
-		0, cos(ISO), -sin(ISO),
-		0, sin(ISO), cos(ISO)};
-	transform_map(map, rot_x_90);
-	transform_map(map, rot_z_45);
-	transform_map(map, rot_x_iso);
+	rotate_x(map, -M_PI_2);
+	rotate_y(map, M_PI_4);
+	rotate_x(map, ISO);
 }
 
-void	scale_z(t_map *map)
+void	scale_z(t_map *map, float_t factor)
 {
-	t_matrix3x3	scale_z_1_2;
+	t_matrix3x3	scale_z;
 
-	scale_z_1_2 = (t_matrix3x3){1, 0, 0, 0, 1, 0, 0, 0, 0.5};
-	transform_map(map, scale_z_1_2);
+	scale_z = (t_matrix3x3){1, 0, 0, 0, 1, 0, 0, 0, factor};
+	transform_map(map, scale_z);
 }
 
 void	zoom(t_map *map, float_t factor)

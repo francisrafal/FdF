@@ -1,33 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   transform_bonus.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: frafal <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/14 14:17:05 by frafal            #+#    #+#             */
-/*   Updated: 2022/11/22 14:55:35 by frafal           ###   ########.fr       */
+/*   Created: 2022/11/27 09:53:42 by frafal            #+#    #+#             */
+/*   Updated: 2022/11/27 09:53:42 by frafal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-int	main(int argc, char **argv)
+void    rotate_x(t_map *map, float_t angle)
 {
-	t_data	data;
+	t_matrix3x3	rot_x;
 
-	if (argc != 2)
-	{
-		ft_putstr_fd("Usage: ./fdf MAPFILE\n", 2);
-		return (-1);
-	}
-	if (parse_file(&data, argv[1]) == -1)
-		return (-1);
-	generate_map(&data);
-	scale_z(data.map, 1);
-	generate_iso_view(data.map);
-	zoom(data.map, 1);
-	if (start_mlx(&data) == -1)
-		return (-1);
-	return (0);
+	rot_x = (t_matrix3x3){
+		1, 0, 0,
+		0, cos(angle), -sin(angle),
+		0, sin(angle), cos(angle)};
+	transform_map(map, rot_x);
+}
+
+void    rotate_y(t_map *map, float_t angle)
+{
+	t_matrix3x3	rot_y;
+
+	rot_y = (t_matrix3x3){
+		cos(angle), 0, sin(angle),
+		0, 1, 0,
+		-sin(angle), 0, cos(angle)};
+	transform_map(map, rot_y);
 }

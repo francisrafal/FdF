@@ -50,6 +50,14 @@ int	key_hook(int keysym, t_data *data)
 		translate(data->map, (t_pt){0, -10, 0, 0});
 	if (keysym == XK_Down)
 		translate(data->map, (t_pt){0, 10, 0, 0});
+	if (keysym == XK_w)
+		rotate_x(data->map, -0.1);
+	if (keysym == XK_s)
+		rotate_x(data->map, 0.1);
+	if (keysym == XK_d)
+		rotate_y(data->map, -0.1);
+	if (keysym == XK_a)
+		rotate_y(data->map, 0.1);
 	return (0);
 }
 
