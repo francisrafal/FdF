@@ -21,6 +21,7 @@
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <fcntl.h>
+# include <stdio.h>
 
 # define WIN_W	1280
 # define WIN_H	720
@@ -95,6 +96,7 @@ typedef struct s_data
 	t_map	*map;
 	char	**parsed_file;
 	int		animate_on;
+	t_map	*original_map;
 }			t_data;
 
 void	img_pix_put(t_img *img, t_pt pt);
@@ -135,5 +137,6 @@ int		lines_consistent(int cols, t_data *data);
 void	append_line_to_file(char **line, char **file);
 void	render_instructions(t_data *data, int color);
 void	autoscale(t_map *map);
+t_map	*save_original_map(t_data *data);
 
 #endif

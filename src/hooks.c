@@ -69,6 +69,8 @@ int	start_mlx(t_data *data)
 	mlx_destroy_display(data->mlx_ptr);
 	free(data->map->pt_arr);
 	free(data->map);
+	free(data->original_map->pt_arr);
+	free(data->original_map);
 	free(data->mlx_ptr);
 	free_str_arr(data->parsed_file);
 	return (0);

@@ -28,7 +28,29 @@ t_map	*generate_map(t_data *data)
 	map->space = 10;
 	fill_map(data, map);
 	set_point_colors(map);
+	save_original_map(data);
 	return (map);
+}
+
+t_map	*save_original_map(t_data *data)
+{
+	t_pt	*cur;
+	int		i;
+	
+	data->original_map = malloc(sizeof(t_map));
+	if (data->original_map == NULL)
+		return (NULL);
+	data->original_map->pt_arr = malloc(data->map->x_dim * data->map->y_dim * sizeof(t_pt));
+	if (data->original_map->pt_arr == NULL)
+		return (NULL);
+	i = 0;
+	while (i < data->map->x_dim * data->map->y_dim)
+	{
+		cur = data->map->pt_arr + i;
+		*(data->original_map->pt_arr + i) = *cur;
+		i++;
+	}
+	return (data->original_map);
 }
 
 void	fill_map(t_data *data, t_map *map)

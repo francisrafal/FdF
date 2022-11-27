@@ -52,13 +52,20 @@ int	key_hook(int keysym, t_data *data)
 	if (keysym == XK_Down)
 		translate(data->map, (t_pt){0, 10, 0, 0});
 	if (keysym == XK_w)
+	{
 		rotate_x(data->map, -0.1);
+		printf("%f %f %f\n%f %f %f\n %f %f %f\n", data->map->base_i.x, data->map->base_j.x,data->map->base_k.x,data->map->base_i.y,data->map->base_j.y,data->map->base_k.y,data->map->base_i.z,data->map->base_j.z,data->map->base_k.z);
+	}
 	if (keysym == XK_s)
 		rotate_x(data->map, 0.1);
 	if (keysym == XK_d)
 		rotate_y(data->map, -0.1);
 	if (keysym == XK_a)
 		rotate_y(data->map, 0.1);
+	if (keysym == XK_k)
+		scale_z(data->map, 1.1);
+	if (keysym == XK_j)
+		scale_z(data->map, 1 / 1.1);
 	if (keysym == XK_space)
 		data->animate_on ^= 0x1;
 	return (0);
@@ -95,6 +102,8 @@ int	start_mlx(t_data *data)
 	mlx_destroy_display(data->mlx_ptr);
 	free(data->map->pt_arr);
 	free(data->map);
+	free(data->original_map->pt_arr);
+	free(data->original_map);
 	free(data->mlx_ptr);
 	free_str_arr(data->parsed_file);
 	return (0);
