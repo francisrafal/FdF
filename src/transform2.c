@@ -63,3 +63,17 @@ void	autoscale(t_map *map)
 	scale_y = (WIN_H / 2 - 30) / fmaxf(abs(map->max_y), abs(map->min_y));
 	zoom(map, fminf(scale_x, scale_y));
 }
+
+void	restore_map(t_data *data)
+{
+	int			i;
+	i = 0;
+	while (i < data->map->x_dim * data->map->y_dim)
+	{
+		*(data->map->pt_arr + i) = *(data->original_map->pt_arr + i);
+		i++;
+	}
+	data->map->base_i = (t_pt){1, 0, 0, 0x0};
+	data->map->base_j = (t_pt){0, 1, 0, 0x0};
+	data->map->base_k = (t_pt){0, 0, 1, 0x0};
+}

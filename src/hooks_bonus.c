@@ -66,6 +66,17 @@ int	key_hook(int keysym, t_data *data)
 		scale_z(data, 1.1);
 	if (keysym == XK_j)
 		scale_z(data, 1 / 1.1);
+	if (keysym == XK_t)
+	{
+		restore_map(data);
+		autoscale(data->map);
+	}
+	if (keysym == XK_r)
+	{
+		restore_map(data);
+		generate_iso_view(data->map);
+		autoscale(data->map);
+	}
 	if (keysym == XK_space)
 		data->animate_on ^= 0x1;
 	return (0);

@@ -73,20 +73,11 @@ void	render_background(t_img *img, int color)
 
 void	render_instructions(t_data *data, int color)
 {
-	char *str1;
-	char *str2;
-	char *str3;
-	char *str4;
-	char *str5;
-
-	str1 = "Zoom: =, -";
-	str2 = "Translate: Up, Down, Left, Right";
-	str3 = "Rotate: W, A, S, D";
-	str4 = "Change Height: J, K";
-	str5 = "Animate: Space";
-	mlx_string_put(data->mlx_ptr, data->win_ptr, 30, 30, color, str1);
-	mlx_string_put(data->mlx_ptr, data->win_ptr, 30, 50, color, str2);
-	mlx_string_put(data->mlx_ptr, data->win_ptr, 30, 70, color, str3);
-	mlx_string_put(data->mlx_ptr, data->win_ptr, 30, 90, color, str4);
-	mlx_string_put(data->mlx_ptr, data->win_ptr, 30, 110, color, str5);
+	mlx_string_put(data->mlx_ptr, data->win_ptr, 30, 30, color, "Zoom: =, -");
+	mlx_string_put(data->mlx_ptr, data->win_ptr, 30, 50, color, "Translate: Up, Down, Left, Right");
+	mlx_string_put(data->mlx_ptr, data->win_ptr, 30, 70, color, "Rotate: W, A, S, D");
+	mlx_string_put(data->mlx_ptr, data->win_ptr, 30, 90, color, "Change Height: J, K");
+	mlx_string_put(data->mlx_ptr, data->win_ptr, 30, 110, color, "Reset Isometric View: R");
+	mlx_string_put(data->mlx_ptr, data->win_ptr, 30, 130, color, "Top View: T");
+	mlx_string_put(data->mlx_ptr, data->win_ptr, 30, 150, color, "Animate: Space");
 }

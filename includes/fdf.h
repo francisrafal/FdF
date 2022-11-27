@@ -138,5 +138,6 @@ void	append_line_to_file(char **line, char **file);
 void	render_instructions(t_data *data, int color);
 void	autoscale(t_map *map);
 t_map	*save_original_map(t_data *data);
+void	restore_map(t_data *data);
 
 #endif
