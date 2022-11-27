@@ -61,5 +61,8 @@ t_map	*transform_map(t_map *map, t_matrix3x3 mat)
 		*cur = mat_mult(mat, *cur);
 		i++;
 	}
+	map->base_i = mat_mult(mat, map->base_i);
+	map->base_j = mat_mult(mat, map->base_j);
+	map->base_k = mat_mult(mat, map->base_k);
 	return (map);
 }

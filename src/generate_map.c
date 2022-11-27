@@ -19,6 +19,9 @@ t_map	*generate_map(t_data *data)
 	map = data->map;
 	map->min_height = 0;
 	map->max_height = 0;
+	map->base_i = (t_pt){1, 0, 0, 0x0};
+	map->base_j = (t_pt){0, 1, 0, 0x0};
+	map->base_k = (t_pt){0, 0, 1, 0x0};
 	map->pt_arr = malloc(map->x_dim * map->y_dim * sizeof(t_pt));
 	if (map->pt_arr == NULL)
 		return (NULL);

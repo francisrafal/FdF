@@ -60,6 +60,9 @@ typedef struct s_map
 	int		max_x;
 	int		min_y;
 	int		max_y;
+	t_pt	base_i;
+	t_pt	base_j;
+	t_pt	base_k;
 }			t_map;
 
 typedef struct s_matrix3x3
