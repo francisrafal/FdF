@@ -26,7 +26,7 @@ int	main(int argc, char **argv)
 	generate_map(&data);
 	scale_z(data.map);
 	generate_iso_view(data.map);
-	zoom(data.map);
+	zoom(data.map, 10);
 	if (start_mlx(&data) == -1)
 		return (-1);
 	return (0);

@@ -43,12 +43,12 @@ BONUSSRCSLIST	:= main.c \
 					transform.c \
 					draw.c \
 					generate_map.c
-BONUSSRCS		:= $(addprefix ${SRCSDIR}, ${SRCSLIST})
+BONUSSRCS		:= $(addprefix ${SRCSDIR}, ${BONUSSRCSLIST})
 
 OBJSDIR			:= ./obj/
 OBJSLIST		:= ${SRCSLIST:.c=.o}
 OBJS			:= $(addprefix ${OBJSDIR}, ${OBJSLIST})
-BONUSOBJSLIST	:= ${SRCSLIST:.c=.o}
+BONUSOBJSLIST	:= ${BONUSSRCSLIST:.c=.o}
 BONUSOBJS		:= $(addprefix ${OBJSDIR}, ${BONUSOBJSLIST})
 
 LIBFTDIR		:= ./libft/

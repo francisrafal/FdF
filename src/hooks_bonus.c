@@ -38,6 +38,18 @@ int	key_hook(int keysym, t_data *data)
 		mlx_destroy_window(data->mlx_ptr, data->win_ptr);
 		data->win_ptr = NULL;
 	}
+	if (keysym == XK_equal)
+		zoom(data->map, 1.2);
+	if (keysym == XK_minus)
+		zoom(data->map, 1/1.2);
+	if (keysym == XK_Left)
+		translate(data->map, (t_pt){-10, 0, 0, 0});
+	if (keysym == XK_Right)
+		translate(data->map, (t_pt){10, 0, 0, 0});
+	if (keysym == XK_Up)
+		translate(data->map, (t_pt){0, -10, 0, 0});
+	if (keysym == XK_Down)
+		translate(data->map, (t_pt){0, 10, 0, 0});
 	return (0);
 }
 

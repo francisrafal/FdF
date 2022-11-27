@@ -40,12 +40,26 @@ void	scale_z(t_map *map)
 	transform_map(map, scale_z_1_2);
 }
 
-void	zoom(t_map *map)
+void	zoom(t_map *map, float_t factor)
 {
-	t_matrix3x3	scale_10;
+	t_matrix3x3	scale;
 
-	scale_10 = (t_matrix3x3){10, 0, 0, 0, 10, 0, 0, 0, 10};
-	transform_map(map, scale_10);
+	scale = (t_matrix3x3){factor, 0, 0, 0, factor, 0, 0, 0, factor};
+	transform_map(map, scale);
+}
+
+void	translate(t_map *map, t_pt offset)
+{
+	int		i;
+	t_pt	*cur;
+
+	i = 0;
+	while (i < map->x_dim * map->y_dim)
+	{
+		cur = map->pt_arr + i;
+		*cur = vec_add(*cur, offset);
+		i++;
+	}
 }
 
 t_map	*transform_map(t_map *map, t_matrix3x3 mat)
