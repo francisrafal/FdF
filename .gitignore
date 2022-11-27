@@ -1,5 +1,6 @@
 *.swp
 fdf
+fdf_bonus
 test_maps
 *.o
 obj/
