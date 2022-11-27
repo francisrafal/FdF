@@ -87,8 +87,9 @@ int	start_mlx(t_data *data)
 	data->img.addr = mlx_get_data_addr(data->img.mlx_img, &data->img.bpp,
 			&data->img.line_len, &data->img.endian);
 	mlx_loop_hook(data->mlx_ptr, loop_hook, data);
-	mlx_key_hook(data->win_ptr, key_hook, data);
 	mlx_hook(data->win_ptr, DestroyNotify, 0, close_app, data);
+	mlx_hook(data->win_ptr, KeyPress, KeyPressMask, key_hook, data);
+	mlx_do_key_autorepeaton(data->mlx_ptr);
 	mlx_loop(data->mlx_ptr);
 	mlx_destroy_image(data->mlx_ptr, data->img.mlx_img);
 	mlx_destroy_display(data->mlx_ptr);
