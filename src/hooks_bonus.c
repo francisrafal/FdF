@@ -63,9 +63,9 @@ int	key_hook(int keysym, t_data *data)
 	if (keysym == XK_a)
 		rotate_y(data->map, 0.1);
 	if (keysym == XK_k)
-		scale_z(data->map, 1.1);
+		scale_z(data, 1.1);
 	if (keysym == XK_j)
-		scale_z(data->map, 1 / 1.1);
+		scale_z(data, 1 / 1.1);
 	if (keysym == XK_space)
 		data->animate_on ^= 0x1;
 	return (0);

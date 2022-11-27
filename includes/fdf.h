@@ -131,7 +131,7 @@ void	zoom(t_map *map, float_t factor);
 void	translate(t_map *map, t_pt offset);
 void    rotate_x(t_map *map, float_t angle);
 void    rotate_y(t_map *map, float_t angle);
-void	scale_z(t_map *map, float_t factor);
+void	scale_z(t_data *data, float_t factor);
 char	*get_file(int fd, t_data *data);
 int		lines_consistent(int cols, t_data *data);
 void	append_line_to_file(char **line, char **file);

@@ -19,20 +19,28 @@ void	generate_iso_view(t_map *map)
 	rotate_x(map, ISO);
 }
 
-void	scale_z(t_map *map, float_t factor)
+void	scale_z(t_data *data, float_t factor)
 {
 	t_matrix3x3	scale_z;
-	//t_matrix3x3 tmp;
-	t_matrix3x3 reset;
-/*
-	tmp = (t_matrix3x3){map->base_i.x, map->base_i.y, map->base_i.z,
-			map->base_j.x, map->base_j.y, map->base_j.z,
-			map->base_k.x, map->base_k.y, map->base_k.z};
-			*/
-	reset = (t_matrix3x3){1, 0, 0, 0, 1, 0, 0, 0, 1};
-	transform_map(map, reset);
+	int			i;
+	(void)factor;
+	t_matrix3x3 tmp;
+
+	tmp = (t_matrix3x3){data->map->base_i.x, data->map->base_i.y, data->map->base_i.z,
+			data->map->base_j.x, data->map->base_j.y, data->map->base_j.z,
+			data->map->base_k.x, data->map->base_k.y, data->map->base_k.z};
+	i = 0;
+	while (i < data->map->x_dim * data->map->y_dim)
+	{
+		*(data->map->pt_arr + i) = *(data->original_map->pt_arr + i);
+		i++;
+	}
+	data->map->base_i = (t_pt){1, 0, 0, 0x0};
+	data->map->base_j = (t_pt){0, 1, 0, 0x0};
+	data->map->base_k = (t_pt){0, 0, 1, 0x0};
 	scale_z = (t_matrix3x3){1, 0, 0, 0, 1, 0, 0, 0, factor};
-	transform_map(map, scale_z);
+	transform_map(data->map, scale_z);
+	transform_map(data->map, tmp);
 }
 
 void	zoom(t_map *map, float_t factor)

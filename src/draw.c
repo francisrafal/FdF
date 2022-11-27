@@ -77,13 +77,16 @@ void	render_instructions(t_data *data, int color)
 	char *str2;
 	char *str3;
 	char *str4;
+	char *str5;
 
 	str1 = "Zoom: =, -";
 	str2 = "Translate: Up, Down, Left, Right";
 	str3 = "Rotate: W, A, S, D";
-	str4 = "Animate: Space";
+	str4 = "Change Height: J, K";
+	str5 = "Animate: Space";
 	mlx_string_put(data->mlx_ptr, data->win_ptr, 30, 30, color, str1);
 	mlx_string_put(data->mlx_ptr, data->win_ptr, 30, 50, color, str2);
 	mlx_string_put(data->mlx_ptr, data->win_ptr, 30, 70, color, str3);
 	mlx_string_put(data->mlx_ptr, data->win_ptr, 30, 90, color, str4);
+	mlx_string_put(data->mlx_ptr, data->win_ptr, 30, 110, color, str5);
 }
