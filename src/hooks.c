@@ -18,7 +18,7 @@ int	loop_hook(t_data *data)
 
 	if (data->win_ptr == NULL)
 		return (1);
-	render_background(&data->img, DGREY);
+	render_background(&data->img, BLACK);
 	map = data->map;
 	offset.x = WIN_W / 2;
 	offset.y = WIN_H / 2;
