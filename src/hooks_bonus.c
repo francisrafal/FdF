@@ -39,9 +39,9 @@ int	key_hook(int keysym, t_data *data)
 		mlx_destroy_window(data->mlx_ptr, data->win_ptr);
 		data->win_ptr = NULL;
 	}
-	if (keysym == XK_equal)
+	if (keysym == XK_KP_Add)
 		zoom(data->map, 1.2);
-	if (keysym == XK_minus)
+	if (keysym == XK_KP_Subtract)
 		zoom(data->map, 1/1.2);
 	if (keysym == XK_Left)
 		translate(data->map, (t_pt){-10, 0, 0, 0});
@@ -103,7 +103,7 @@ int	start_mlx(t_data *data)
 			&data->img.line_len, &data->img.endian);
 	mlx_loop_hook(data->mlx_ptr, loop_hook, data);
 	mlx_hook(data->win_ptr, DestroyNotify, 0, close_app, data);
-	mlx_hook(data->win_ptr, KeyPress, KeyPressMask, key_hook, data);
+	mlx_hook(data->win_ptr, KeyPress, 1, key_hook, data);
 	mlx_do_key_autorepeaton(data->mlx_ptr);
 	mlx_loop(data->mlx_ptr);
 	mlx_destroy_image(data->mlx_ptr, data->img.mlx_img);

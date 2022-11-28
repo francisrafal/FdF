@@ -73,7 +73,7 @@ void	render_background(t_img *img, int color)
 
 void	render_instructions(t_data *data, int color)
 {
-	mlx_string_put(data->mlx_ptr, data->win_ptr, 30, 30, color, "Zoom: =, -");
+	mlx_string_put(data->mlx_ptr, data->win_ptr, 30, 30, color, "Zoom: Keypad +, -");
 	mlx_string_put(data->mlx_ptr, data->win_ptr, 30, 50, color, "Translate: Up, Down, Left, Right");
 	mlx_string_put(data->mlx_ptr, data->win_ptr, 30, 70, color, "Rotate: W, A, S, D");
 	mlx_string_put(data->mlx_ptr, data->win_ptr, 30, 90, color, "Change Height: J, K");
