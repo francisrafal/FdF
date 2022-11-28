@@ -37,7 +37,7 @@
 # define DGREY	0x00333333
 # define GROUND_COLOR	RED
 # define HIGH_COLOR		PURPLE
-# define LOW_COLOR		BLACK
+# define LOW_COLOR		DRED
 # define ISO	0.6154
 
 typedef struct s_pt
