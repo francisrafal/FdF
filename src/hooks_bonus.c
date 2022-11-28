@@ -32,7 +32,7 @@ int	loop_hook(t_data *data)
 	return (0);
 }
 
-int	key_hook(int keysym, t_data *data)
+int	key_hook1(int keysym, t_data *data)
 {
 	if (keysym == XK_Escape)
 	{
@@ -42,7 +42,7 @@ int	key_hook(int keysym, t_data *data)
 	if (keysym == XK_KP_Add)
 		zoom(data->map, 1.2);
 	if (keysym == XK_KP_Subtract)
-		zoom(data->map, 1/1.2);
+		zoom(data->map, 1 / 1.2);
 	if (keysym == XK_Left)
 		translate(data->map, (t_pt){-10, 0, 0, 0});
 	if (keysym == XK_Right)
@@ -55,6 +55,13 @@ int	key_hook(int keysym, t_data *data)
 		rotate_x(data->map, -0.1);
 	if (keysym == XK_s)
 		rotate_x(data->map, 0.1);
+	else
+		key_hook2(keysym, data);
+	return (0);
+}
+
+int	key_hook2(int keysym, t_data *data)
+{
 	if (keysym == XK_d)
 		rotate_y(data->map, -0.1);
 	if (keysym == XK_a)
@@ -103,7 +110,7 @@ int	start_mlx(t_data *data)
 			&data->img.line_len, &data->img.endian);
 	mlx_loop_hook(data->mlx_ptr, loop_hook, data);
 	mlx_hook(data->win_ptr, DestroyNotify, 0, close_app, data);
-	mlx_hook(data->win_ptr, KeyPress, 1, key_hook, data);
+	mlx_hook(data->win_ptr, KeyPress, 1, key_hook1, data);
 	mlx_do_key_autorepeaton(data->mlx_ptr);
 	mlx_loop(data->mlx_ptr);
 	mlx_destroy_image(data->mlx_ptr, data->img.mlx_img);
