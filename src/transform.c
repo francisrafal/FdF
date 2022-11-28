@@ -22,15 +22,17 @@ void	generate_iso_view(t_map *map)
 void	scale_z(t_data *data, float_t factor)
 {
 	t_matrix3x3	scale_z;
-	t_matrix3x3 tmp;
+	t_matrix3x3	tmp;
+	t_map		*map;
 
-	tmp = (t_matrix3x3){data->map->base_i.x, data->map->base_i.y, data->map->base_i.z,
-			data->map->base_j.x, data->map->base_j.y, data->map->base_j.z,
-			data->map->base_k.x, data->map->base_k.y, data->map->base_k.z};
+	map = data->map;
+	tmp = (t_matrix3x3){map->base_i.x, map->base_i.y, map->base_i.z,
+		map->base_j.x, map->base_j.y, map->base_j.z,
+		map->base_k.x, map->base_k.y, map->base_k.z};
 	scale_z = (t_matrix3x3){1, 0, 0, 0, 1, 0, 0, 0, factor};
 	restore_map(data);
-	transform_map(data->map, scale_z);
-	transform_map(data->map, tmp);
+	transform_map(map, scale_z);
+	transform_map(map, tmp);
 }
 
 void	zoom(t_map *map, float_t factor)

@@ -139,5 +139,6 @@ void	render_instructions(t_data *data, int color);
 void	autoscale(t_map *map);
 t_map	*save_original_map(t_data *data);
 void	restore_map(t_data *data);
+void	set_xy_min_max(t_map *map);
 
 #endif

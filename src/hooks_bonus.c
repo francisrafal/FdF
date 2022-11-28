@@ -35,10 +35,7 @@ int	loop_hook(t_data *data)
 int	key_hook1(int keysym, t_data *data)
 {
 	if (keysym == XK_Escape)
-	{
-		mlx_destroy_window(data->mlx_ptr, data->win_ptr);
-		data->win_ptr = NULL;
-	}
+		close_app(data);
 	if (keysym == XK_KP_Add)
 		zoom(data->map, 1.2);
 	if (keysym == XK_KP_Subtract)
@@ -90,6 +87,15 @@ int	close_app(t_data *data)
 {
 	mlx_destroy_window(data->mlx_ptr, data->win_ptr);
 	data->win_ptr = NULL;
+	mlx_destroy_image(data->mlx_ptr, data->img.mlx_img);
+	mlx_destroy_display(data->mlx_ptr);
+	free(data->map->pt_arr);
+	free(data->map);
+	free(data->original_map->pt_arr);
+	free(data->original_map);
+	free(data->mlx_ptr);
+	free_str_arr(data->parsed_file);
+	exit(0);
 	return (0);
 }
 
@@ -113,13 +119,5 @@ int	start_mlx(t_data *data)
 	mlx_hook(data->win_ptr, KeyPress, 1, key_hook1, data);
 	mlx_do_key_autorepeaton(data->mlx_ptr);
 	mlx_loop(data->mlx_ptr);
-	mlx_destroy_image(data->mlx_ptr, data->img.mlx_img);
-	mlx_destroy_display(data->mlx_ptr);
-	free(data->map->pt_arr);
-	free(data->map);
-	free(data->original_map->pt_arr);
-	free(data->original_map);
-	free(data->mlx_ptr);
-	free_str_arr(data->parsed_file);
 	return (0);
 }

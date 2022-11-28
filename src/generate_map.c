@@ -36,11 +36,12 @@ t_map	*save_original_map(t_data *data)
 {
 	t_pt	*cur;
 	int		i;
-	
+
 	data->original_map = malloc(sizeof(t_map));
 	if (data->original_map == NULL)
 		return (NULL);
-	data->original_map->pt_arr = malloc(data->map->x_dim * data->map->y_dim * sizeof(t_pt));
+	data->original_map->pt_arr = malloc(data->map->x_dim
+			* data->map->y_dim * sizeof(t_pt));
 	if (data->original_map->pt_arr == NULL)
 		return (NULL);
 	i = 0;
