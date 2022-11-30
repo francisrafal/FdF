@@ -36,9 +36,9 @@ int	key_hook1(int keysym, t_data *data)
 {
 	if (keysym == XK_Escape)
 		close_app(data);
-	if (keysym == XK_KP_Add)
+	if (keysym == XK_equal)
 		zoom(data->map, 1.2);
-	if (keysym == XK_KP_Subtract)
+	if (keysym == XK_minus)
 		zoom(data->map, 1 / 1.2);
 	if (keysym == XK_Left)
 		translate(data->map, (t_pt){-10, 0, 0, 0});

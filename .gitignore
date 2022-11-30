@@ -1,7 +1,6 @@
 *.swp
 fdf
 fdf_bonus
-test_maps
 *.o
 obj/
 libft/libft.a
