@@ -12,11 +12,17 @@ Click the image to watch a short video on YouTube:
 ## Installation
 1. Clone the repository
 2. Install Dependencies
-```sudo apt-get update && sudo apt-get install xorg libxext-dev zlib1g-dev libbsd-dev```
-3. Build Mandatory Part
-```make```
-4. Or Build Bonus Part
-```make bonus```
+```
+sudo apt-get update && sudo apt-get install xorg libxext-dev zlib1g-dev libbsd-dev
+```
+3. Build Mandatory Part (Wireframe Viewer)
+```
+make
+```
+4. Build Bonus Part (Wireframe Viewer Controllable By user)
+```
+make bonus
+```
 
 ## Usage
 Mandatory Part:
