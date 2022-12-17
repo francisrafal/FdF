@@ -6,9 +6,8 @@ The mandatory part just displays the wireframe model.
 The bonus part allows the user to move the model with the keyboard.
 
 ## Video Demonstration
-[![Video demonstrating some test_maps with the fdf wire frame model viewer]
-(https://img.youtube.com/vi/Ov3ljgXXIAQ/maxresdefault.jpg)]
-(https://www.youtube.com/watch?v=Ov3ljgXXIAQ)
+Click the image to watch a short video on YouTube:
+[![Video demonstrating some test_maps with the fdf wire frame model viewer](https://img.youtube.com/vi/Ov3ljgXXIAQ/maxresdefault.jpg)](https://www.youtube.com/watch?v=Ov3ljgXXIAQ)
 
 ## Installation
 1. Clone the repository
