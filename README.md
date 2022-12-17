@@ -1,9 +1,10 @@
 # FdF
 
-This wire frame viewer for Linux is a project for my core curriculum at 42 Vienna. It shows .fdf-Files as a wireframe model in isometric projection.
+This wire frame viewer for Linux is a project from my core curriculum at 42 Vienna. It shows .fdf-Files as a wireframe model in isometric projection.
 FdF stands for fil de fer which means wireframe in French.
 The mandatory part just displays the wireframe model.
 The bonus part allows the user to move the model with the keyboard.
+It was coded according to the school norm which prohibits i.e. for-loops.
 
 ## Video Demonstration
 Click the image to watch a short video on YouTube:
